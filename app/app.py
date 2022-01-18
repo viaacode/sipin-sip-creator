@@ -6,6 +6,7 @@ from viaa.configuration import ConfigParser
 from viaa.observability import logging
 
 from app.services import rabbit
+from app.helpers.events import WatchfolderMessage, InvalidMessageException
 
 
 class EventListener:
@@ -21,10 +22,15 @@ class EventListener:
 
     def handle_message(self, channel, method, properties, body):
         # TODO:
-        #  - Parse message
         #  - Transform xml metadata to METS
         #  - Create bag
         #  - Send event to transfer-controller topic
+        try:
+            WatchfolderMessage(body)
+        except InvalidMessageException as e:
+            self.log.error(e)
+            channel.basic_nack(method.delivery_tag, requeue=False)
+            return
         channel.basic_ack(method.delivery_tag)
 
     def start(self):
