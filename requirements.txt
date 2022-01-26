@@ -3,6 +3,7 @@ python-json-logger==2.0.2
 PyYAML==6.0
 structlog==21.5.0
 viaa-chassis==0.2.0rc1
+bagit==1.8.1
 # Dev
 black==21.12b0
 flake8==4.0.1
