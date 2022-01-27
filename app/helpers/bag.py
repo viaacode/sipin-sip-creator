@@ -6,7 +6,7 @@ import bagit
 from app.helpers.events import WatchfolderMessage
 
 
-def create_sip_bag(watchfolder_message: WatchfolderMessage):
+def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     """Create the SIP in the bag format.
 
      - Create the minimal SIP
@@ -30,6 +30,8 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage):
 
     Args:
         watchfolder_message: The parse watchfolder message.
+    Returns:
+        The path of the bag.
     """
     essence_path: Path = watchfolder_message.get_essence_path()
     xml_path = watchfolder_message.get_xml_path()
@@ -81,7 +83,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage):
     bagit.make_bag(root_folder, checksums=["md5"])
 
     # Zip bag
-    shutil.make_archive(
+    bag_path = shutil.make_archive(
         essence_path.parent.joinpath(essence_path.stem).with_suffix(".bag"),
         "zip",
         root_folder,
@@ -89,3 +91,5 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage):
 
     # Remove root folder
     shutil.rmtree(root_folder)
+
+    return Path(bag_path)

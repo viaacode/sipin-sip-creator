@@ -2,6 +2,7 @@ viaa:
   logging:
     level: DEBUG
 app:
+  host: !ENV ${HOST}
   rabbitmq:
     host: !ENV ${RABBITMQ_HOST}
     port: 5672
@@ -9,3 +10,6 @@ app:
     password: !ENV ${RABBITMQ_PASSWORD}
     queue: !ENV ${RABBITMQ_QUEUE}
     prefetch_count: !ENV ${RABBITMQ_PREFETCH_COUNT}
+  pulsar:
+    host: !ENV ${PULSAR_HOST}
+    port: 6650
