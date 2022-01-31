@@ -1,0 +1,15 @@
+<premis:premis xmlns:premis="http://www.loc.gov/premis/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.0">
+  <premis:object xsi:type="premis:file">
+    <premis:objectIdentifier>
+      <premis:objectIdentifierType>UUID</premis:objectIdentifierType>
+      <premis:objectIdentifierValue>e864ca60-97c2-468c-89be-061328aa154e</premis:objectIdentifierValue>
+    </premis:objectIdentifier>
+    <premis:objectCategory>file</premis:objectCategory>
+    <premis:objectCharacteristics>
+      <premis:fixity>
+        <premis:messageDigestAlgorithm authority="cryptographicHashFunctions" authorityURI="http://id.loc.gov/vocabulary/preservation/cryptographicHashFunctions" valueURI="http://id.loc.gov/vocabulary/preservation/cryptographicHashFunctions/md5">MD5</premis:messageDigestAlgorithm>
+        <premis:messageDigest>digest</premis:messageDigest>
+      </premis:fixity>
+    </premis:objectCharacteristics>
+  </premis:object>
+</premis:premis>

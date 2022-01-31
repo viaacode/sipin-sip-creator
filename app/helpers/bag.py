@@ -6,6 +6,7 @@ from lxml import etree
 
 from app.helpers.dcterms import DCTerms
 from app.helpers.events import WatchfolderMessage
+from app.helpers.premis import Fixity
 
 
 def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
@@ -86,7 +87,11 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         "preservation"
     )
     representations_metadata_pres_folder.mkdir(exist_ok=True)
-    # TODO: create preservation metadata and store it
+    fixity = Fixity().to_element()
+    etree.ElementTree(fixity).write(
+        str(representations_metadata_pres_folder.joinpath(xml_path.name)),
+        pretty_print=True,
+    )
 
     # Make bag
     bagit.make_bag(root_folder, checksums=["md5"])
