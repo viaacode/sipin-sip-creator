@@ -2,7 +2,9 @@ from pathlib import Path
 import shutil
 
 import bagit
+from lxml import etree
 
+from app.helpers.dcterms import DCTerms
 from app.helpers.events import WatchfolderMessage
 
 
@@ -70,7 +72,14 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         "descriptive"
     )
     representations_metadata_desc_folder.mkdir(exist_ok=True)
-    # TODO: Create descriptive metadata
+    "Create descriptive metadata and store it"
+    dc_terms = DCTerms(
+        watchfolder_message.cp_name, essence_path.stem, essence_path.name
+    ).to_element()
+    etree.ElementTree(dc_terms).write(
+        str(representations_metadata_desc_folder.joinpath(xml_path.name)),
+        pretty_print=True,
+    )
 
     # representations/representations1/metadata/preservation
     representations_metadata_pres_folder = representations_metadata_folder.joinpath(

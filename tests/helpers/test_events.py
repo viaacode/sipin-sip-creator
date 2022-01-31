@@ -1,21 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import json
-import os
+from pathlib import Path
 
 import pytest
 
 from app.helpers.events import WatchfolderMessage, InvalidMessageException
+from tests.helpers import load_resource
 
 
-folder = os.path.join("tests", "resources", "watchfolder")
+folder = Path("tests", "resources", "watchfolder")
 
 
 def _load_resource(filename):
-    with open(os.path.join(folder, filename), "rb") as f:
-        contents = f.read()
-    return contents
+    return load_resource(folder.joinpath(filename))
 
 
 def test_message_valid():

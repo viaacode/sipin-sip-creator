@@ -1,0 +1,5 @@
+<item xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.0">
+  <dcterms:creator>Creator</dcterms:creator>
+  <dcterms:identifier>Identifier</dcterms:identifier>
+  <dcterms:title>Title</dcterms:title>
+</item>
