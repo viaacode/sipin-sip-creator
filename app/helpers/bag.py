@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from pathlib import Path
 import shutil
 
@@ -7,6 +10,7 @@ from lxml import etree
 from app.helpers.dcterms import DCTerms
 from app.helpers.events import WatchfolderMessage
 from app.helpers.premis import Fixity
+from app.helpers.sidecar import Sidecar
 
 
 def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
@@ -41,6 +45,9 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     if not essence_path.exists() or not xml_path.exists():
         # TODO: raise error
         return
+
+    # Parse sidecar
+    sidecar = Sidecar(essence_path)
 
     # Root folder for bag
     root_folder = Path(essence_path.parent, essence_path.stem)
@@ -87,7 +94,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         "preservation"
     )
     representations_metadata_pres_folder.mkdir(exist_ok=True)
-    fixity = Fixity().to_element()
+    fixity = Fixity(sidecar.md5).to_element()
     etree.ElementTree(fixity).write(
         str(representations_metadata_pres_folder.joinpath(xml_path.name)),
         pretty_print=True,
