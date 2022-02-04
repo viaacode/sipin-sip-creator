@@ -61,7 +61,7 @@ class EventListener:
             data = {
                 "host": self.config["host"],
                 "path": str(bag_path),
-                "outcome": EventOutcome.SUCCESS,
+                "outcome": EventOutcome.SUCCESS.to_str(),
                 "message": f"SIP created: '{bag_path}'",
             }
 
