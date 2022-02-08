@@ -12,3 +12,4 @@ class Sidecar:
     def __init__(self, path: Path):
         self.root = etree.parse(str(path))
         self.md5 = self.root.findtext("md5")
+        self.cp_id = self.root.findtext("CP_id")

@@ -9,6 +9,7 @@ from app.helpers.sidecar import Sidecar
 def test_sidecar():
     sidecar = Sidecar(Path("tests", "resources", "sidecar", "sidecar.xml"))
     assert not sidecar.md5
+    assert sidecar.cp_id == "CP ID"
 
 
 def test_sidecar_md5():

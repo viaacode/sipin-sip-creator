@@ -43,7 +43,9 @@ def md5(file: Path) -> str:
     return hash_md5.hexdigest()
 
 
-def create_package_mets(watchfolder_message: WatchfolderMessage, sip_root_folder: Path):
+def create_package_mets(
+    watchfolder_message: WatchfolderMessage, sip_root_folder: Path, sidecar: Sidecar
+):
     """Create the package METS.
 
     Args:
@@ -74,7 +76,10 @@ def create_package_mets(watchfolder_message: WatchfolderMessage, sip_root_folder
 
     # Submitting agent
     submitting_agent = Agent(
-        AgentRole.CREATOR, AgentType.ORGANIZATION, name=watchfolder_message.cp_name
+        AgentRole.CREATOR,
+        AgentType.ORGANIZATION,
+        name=watchfolder_message.cp_name,
+        note=Note(sidecar.cp_id, NoteType.IDENTIFICATIONCODE),
     )
     doc.add_agent(submitting_agent)
 
@@ -328,7 +333,9 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     )
 
     # Create and write package mets.xml
-    package_mets_element = create_package_mets(watchfolder_message, root_folder)
+    package_mets_element = create_package_mets(
+        watchfolder_message, root_folder, sidecar
+    )
     etree.ElementTree(package_mets_element).write(
         str(root_folder.joinpath("mets.xml")), pretty_print=True
     )
