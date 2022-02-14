@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from uuid import uuid4
 
 import pika.exceptions
 from cloudevents.events import (
@@ -55,7 +54,6 @@ class EventListener:
                 source=APP_NAME,
                 subject=message.get_essence_path().stem,
                 outcome=EventOutcome.SUCCESS,
-                correlation_id=str(uuid4()),
             )
 
             data = {
