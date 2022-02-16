@@ -1,10 +1,11 @@
 FROM python:3.8-slim
 
 # Make a new group and user so we don't run as root.
-RUN addgroup --system appgroup && adduser --system appuser --ingroup appgroup
+ARG UID=1000
+ARG GID=1000
 
+RUN addgroup --system -u $UID appgroup && adduser --system -u $UID appuser --ingroup appgroup
 WORKDIR /app
-
 
 # Let the appuser own the files so he can rwx during runtime.
 COPY . .
