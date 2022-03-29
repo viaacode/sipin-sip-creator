@@ -304,10 +304,9 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         "descriptive"
     )
     representations_metadata_desc_folder.mkdir(exist_ok=True)
-    "Create descriptive metadata and store it"
-    dc_terms = DCTerms(
-        watchfolder_message.cp_name, essence_path.stem, essence_path.name
-    ).to_element()
+
+    # Create descriptive metadata and store it
+    dc_terms = DCTerms.transform(xml_path)
     etree.ElementTree(dc_terms).write(
         str(representations_metadata_desc_folder.joinpath(xml_path.name)),
         pretty_print=True,

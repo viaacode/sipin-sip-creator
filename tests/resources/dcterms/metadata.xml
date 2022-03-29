@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VIAA>
+    <CP>CP</CP>
+    <CP_id>OR-111aaaa</CP_id>
+    <dc_identifier_localid>localid</dc_identifier_localid>
+    <dc_identifier_localids type="list" strategy="OVERWRITE">
+        <Object_number>objnum</Object_number>
+    </dc_identifier_localids>
+    <md5>C624E0E84DAD85D3F7854E7EBA949B53</md5>
+    <dcterms_created>2022-03-29</dcterms_created>
+    <dcterms_issued>2022-03-29</dcterms_issued>
+    <dc_title>Dit is een titel</dc_title>
+    <dc_description>Dit is een beschrijving</dc_description>
+    <dc_types type="list" strategy="OVERWRITE">
+        <multiselect>Nieuws</multiselect>
+        <multiselect>Sport</multiselect>
+    </dc_types>
+    <dc_coverages type="list">
+        <ruimte>Oost-Vlaanderen</ruimte>
+        <ruimte>West-Vlaanderen</ruimte>
+    </dc_coverages>
+    <dc_subjects type="list">
+        <Trefwoord>Voetbal</Trefwoord>
+        <Trefwoord>Handbal</Trefwoord>
+        <Trefwoord>Economie</Trefwoord>
+    </dc_subjects>
+    <dc_rights_licenses type="list">
+        <multiselect>VIAA-PUBLIEK-METADATA-LTD</multiselect>
+        <multiselect>VIAA-INTRA_CP-METADATA-ALL</multiselect>
+        <multiselect>VIAA-INTRA_CP-CONTENT</multiselect>
+        <multiselect>VIAA-ONDERZOEK</multiselect>
+        <multiselect>VIAA-ONDERWIJS</multiselect>
+        <multiselect>BEZOEKERTOOL-CONTENT</multiselect>
+        <multiselect>BEZOEKERTOOL-METADATA-ALL</multiselect>
+    </dc_rights_licenses>
+</VIAA>
