@@ -1,15 +1,15 @@
 <premis:object xmlns:premis="http://www.loc.gov/premis/v3" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api">
-  <dcterms:title>Dit is een titel</dcterms:title>
-  <dcterms:description>Dit is een beschrijving</dcterms:description>
   <dcterms:identifier>localid</dcterms:identifier>
   <premis:objectIdentifier>
     <premis:objectIdentifierType>Object_number</premis:objectIdentifierType>
     <premis:objectIdentifierValue>objnum</premis:objectIdentifierValue>
   </premis:objectIdentifier>
-  <dcterms:type>Nieuws</dcterms:type>
-  <dcterms:type>Sport</dcterms:type>
   <dcterms:created xsi:type="edtf">2022-03-29</dcterms:created>
   <dcterms:issued xsi:type="edtf">2022-03-29</dcterms:issued>
+  <dcterms:title>Dit is een titel</dcterms:title>
+  <dcterms:description>Dit is een beschrijving</dcterms:description>
+  <dcterms:type>Nieuws</dcterms:type>
+  <dcterms:type>Sport</dcterms:type>
   <dcterms:spatial>Oost-Vlaanderen</dcterms:spatial>
   <dcterms:spatial>West-Vlaanderen</dcterms:spatial>
   <dcterms:subject>Voetbal</dcterms:subject>

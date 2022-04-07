@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VIAA>
-    <CP>CP</CP>
-    <CP_id>OR-111aaaa</CP_id>
+    <CP>CP1</CP>
+    <CP_id>OR-0000001</CP_id>
     <dc_identifier_localid>localid</dc_identifier_localid>
     <dc_identifier_localids type="list" strategy="OVERWRITE">
         <Object_number>objnum</Object_number>
