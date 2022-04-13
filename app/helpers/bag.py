@@ -94,6 +94,21 @@ def create_package_mets(
         use=FileGrpUse.DESCRIPTIVE.value,
         label=FileGrpUse.DESCRIPTIVE.value,
     )
+
+    # The descriptive metadata on IE level
+    desc_ie_path_rel = Path("metadata", "descriptive", "dc_ie.xml")
+    desc_ie_path = Path(sip_root_folder, desc_ie_path_rel)
+    desc_ie_file = File(
+        file_type=FileType.FILE,
+        label="descriptive",
+        checksum=md5(desc_ie_path),
+        size=desc_ie_path.stat().st_size,
+        mimetype=mimetypes.guess_type(desc_ie_path)[0],
+        created=datetime.fromtimestamp(desc_ie_path.stat().st_ctime),
+        path=str(desc_ie_path),
+    )
+    metadata_desc_folder.add_child(desc_ie_file)
+
     metadata_preserv_folder = File(
         file_type=FileType.DIRECTORY,
         use=FileGrpUse.PRESERVATION.value,
@@ -110,12 +125,11 @@ def create_package_mets(
         label="representation_1",
     )
 
-    # The representation METS File used for fileSec and strutMap
+    # The representation METS File used for fileSec and structMap
     reps_path_rel = Path("representations", "representation_1", "mets.xml")
     reps_path = Path(sip_root_folder, reps_path_rel)
     reps_file = File(
         file_type=FileType.FILE,
-        use=FileGrpUse.REPRESENTATIONS.value,
         label="representation_1",
         checksum=md5(reps_path),
         size=reps_path.stat().st_size,
@@ -180,21 +194,7 @@ def create_representation_mets(
 
     representation_path = Path("representations", "representation_1")
 
-    # The descriptive metadata file used for fileSec and strutMap
-    descr_path_rel = Path(representation_path, "metadata", "descriptive", xml_file_name)
-    descr_path = Path(sip_root_folder, descr_path_rel)
-    descr_file = File(
-        file_type=FileType.FILE,
-        use=FileGrpUse.DESCRIPTIVE.value,
-        label=FileGrpUse.DESCRIPTIVE.value,
-        mimetype=mimetypes.guess_type(descr_path)[0],
-        path=str(descr_path_rel),
-        size=descr_path.stat().st_size,
-        checksum=md5(descr_path),
-        created=datetime.fromtimestamp(descr_path.stat().st_ctime),
-    )
-
-    # The preservation metadata file used for fileSec and strutMap
+    # The preservation metadata file used for fileSec and structMap
     pres_path_rel = Path(representation_path, "metadata", "preservation", xml_file_name)
     pres_path = Path(sip_root_folder, pres_path_rel)
     pres_file = File(
@@ -208,7 +208,7 @@ def create_representation_mets(
         created=datetime.fromtimestamp(pres_path.stat().st_ctime),
     )
 
-    # The essence file used for fileSec and strutMap
+    # The essence file used for fileSec and structMap
     data_path_rel = Path(representation_path, "data", essence_file_name)
     data_path = Path(sip_root_folder, data_path_rel)
     data_file = File(
@@ -222,8 +222,7 @@ def create_representation_mets(
         created=datetime.fromtimestamp(data_path.stat().st_ctime),
     )
 
-    # Add files
-    metadata_desc_folder.add_child(descr_file)
+    # Add file(s)
     metadata_preserv_folder.add_child(pres_file)
     data_folder.add_child(data_file)
 
@@ -249,13 +248,13 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         mets.xml
         metadata/
             descriptive/
+                dc_ie.xml
             preservation/
         representations/representation_1/
             data/
                 essence.ext
             metadata/
                 descriptive/
-                    file.xml
                 preservation/
                     file.xml
 
@@ -283,6 +282,13 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     # /metadata/descriptive/
     metadata_desc_folder = metadata_folder.joinpath("descriptive")
     metadata_desc_folder.mkdir(exist_ok=True)
+    # Create descriptive metadata and store it
+    dc_terms = DCTerms.transform(xml_path)
+    etree.ElementTree(dc_terms).write(
+        str(metadata_desc_folder.joinpath("dc_ie.xml")),
+        pretty_print=True,
+    )
+
     # /metadata/preservation/
     metadata_pres_folder = metadata_folder.joinpath("preservation")
     metadata_pres_folder.mkdir(exist_ok=True)
@@ -304,13 +310,6 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         "descriptive"
     )
     representations_metadata_desc_folder.mkdir(exist_ok=True)
-
-    # Create descriptive metadata and store it
-    dc_terms = DCTerms.transform(xml_path)
-    etree.ElementTree(dc_terms).write(
-        str(representations_metadata_desc_folder.joinpath(xml_path.name)),
-        pretty_print=True,
-    )
 
     # representations/representation_1/metadata/preservation
     representations_metadata_pres_folder = representations_metadata_folder.joinpath(
