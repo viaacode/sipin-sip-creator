@@ -136,6 +136,7 @@ def create_package_mets(
         mimetype=mimetypes.guess_type(reps_path)[0],
         created=datetime.fromtimestamp(reps_path.stat().st_ctime),
         path=str(reps_path_rel),
+        is_mets=True,
     )
     reps_folder_1.add_child(reps_file)
 

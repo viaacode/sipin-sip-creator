@@ -4,6 +4,7 @@
 from __future__ import annotations
 from datetime import datetime
 from enum import Enum
+from typing import Union, Optional
 from uuid import uuid4
 
 from lxml import etree
@@ -216,40 +217,51 @@ class File:
         mimetype: str = None,
         size: int = None,
         created: str = None,
+        is_mets: bool = False,
     ):
 
         self.path = path
         self.checksum = checksum
         self.type = file_type
         self.use = use
-        self.is_fptr = False
         self.label = label
         self.mimetype = mimetype
         self.size = size
         self.created = created
         self.children = []
+        self.is_mets = is_mets
+
+    def is_fptr(self) -> Union[bool, Optional]:
+        """Calculates if a file is a fptr or a mptr
+
+        If a file points to a METS file, it is a mptr (METS pointer).
+        In all the other cases it is a fptr (File pointer). This only
+        counts for files and not for directories.
+
+        Returns:
+            True if a file points to a non-METS file. False if a file points to a
+            METS file. None in the case of a directory.
+
+        """
+        if self.type == FileType.FILE:
+            if not self.is_mets:
+                return True
+            else:
+                return False
+        return None
 
     def add_child(self, file: File):
         """Add a child to the file.
 
-        In the case of a file, this calculates if the file should have a "fptr" or a
-        "mptr" tag in the structMap.
-
         Args:
             file: The file to add.
+        Raises:
+            ValueError: When adding a file to a file.
         """
-        # Calculate "ftpr" or "mptr"
-        if self.type == FileType.DIRECTORY and file.type == FileType.FILE:
-            if file.use in (
-                FileGrpUse.DOCUMENTATION.value,
-                FileGrpUse.METADATA.value,
-                FileGrpUse.DESCRIPTIVE.value,
-                FileGrpUse.PRESERVATION.value,
-            ):
-                file.is_fptr = True
-            elif file.use in (FileGrpUse.REPRESENTATIONS.value,):
-                file.is_fptr = False
-        self.children.append(file)
+        if self.type == FileType.FILE and file.type == FileType.FILE:
+            raise ValueError("A file can not be a child of a file, only of a folder")
+        else:
+            self.children.append(file)
 
     def to_filesec_element(self):
         """Returns the fileSec node as an lxml element.
@@ -304,7 +316,7 @@ class File:
             for child in self.children:
                 file_element.append(child.to_structmap_element())
         elif self.type == FileType.FILE:
-            if self.is_fptr:
+            if self.is_fptr():
                 file_tag = self.FPTR_TAG
                 file_attrs = {"FILEID": generate_uuid()}
             else:
