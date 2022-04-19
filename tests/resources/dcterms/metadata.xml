@@ -2,6 +2,7 @@
 <VIAA>
     <CP>CP1</CP>
     <CP_id>OR-0000001</CP_id>
+    <PID>PID</PID>
     <dc_identifier_localid>localid</dc_identifier_localid>
     <dc_identifier_localids type="list" strategy="OVERWRITE">
         <Object_number>objnum</Object_number>
@@ -19,6 +20,10 @@
         <ruimte>Oost-Vlaanderen</ruimte>
         <ruimte>West-Vlaanderen</ruimte>
     </dc_coverages>
+    <dc_coverages type="list">
+        <tijd>Interbellum</tijd>
+        <tijd>Jaren 20</tijd>
+    </dc_coverages>
     <dc_subjects type="list">
         <Trefwoord>Voetbal</Trefwoord>
         <Trefwoord>Handbal</Trefwoord>
@@ -33,4 +38,113 @@
         <multiselect>BEZOEKERTOOL-CONTENT</multiselect>
         <multiselect>BEZOEKERTOOL-METADATA-ALL</multiselect>
     </dc_rights_licenses>
+    <dc_rights_comment>Rights comment</dc_rights_comment>
+    <dc_rights_credit>Credit</dc_rights_credit>
+    <dc_rights_rightsOwners>
+        <Auteursrechthouder>Auteur</Auteursrechthouder>
+    </dc_rights_rightsOwners>
+    <dc_rights_rightsHolders>
+        <Licentiehouder>Licentie</Licentiehouder>
+    </dc_rights_rightsHolders>
+    <dc_relations>
+        <bevat>Bevat</bevat>
+    </dc_relations>
+    <dc_relations>
+        <is_deel_van>Is deel van</is_deel_van>
+    </dc_relations>
+    <dc_relations>
+        <is_verwant_aan>Is verwant aan</is_verwant_aan>
+    </dc_relations>
+    <dc_publishers>
+        <Distributeur>Distributeur</Distributeur>
+    </dc_publishers>
+    <dc_publishers>
+        <Exposant>Exposant</Exposant>
+    </dc_publishers>
+    <dc_publishers>
+        <Persagentschap>Persagentschap</Persagentschap>
+    </dc_publishers>
+    <dc_publishers>
+        <Publisher>Publisher</Publisher>
+    </dc_publishers>
+    <dc_languages>
+        <multiselect>Nederlands</multiselect>
+        <multiselect>Engels</multiselect>
+    </dc_languages>
+    <dc_contributors>
+        <Adviseur>Adviseur</Adviseur>
+        <Arrangeur>Arrangeur</Arrangeur>
+        <ArtistiekDirecteur>Artistiek directeur</ArtistiekDirecteur>
+        <Assistent>Assistent</Assistent>
+        <Auteur>Auteur</Auteur>
+        <Belichting>Belichting</Belichting>
+        <Bijdrager>Bijdrager</Bijdrager>
+        <Cameraman>Cameraman</Cameraman>
+        <Co-producer>Coproducer</Co-producer>
+        <Commentator>Commentator</Commentator>
+        <Componist>Componist</Componist>
+        <Decorontwerper>Decorontwerper</Decorontwerper>
+        <Dirigent>Dirigent</Dirigent>
+        <Fotografie>Fotografie</Fotografie>
+        <Geluid>Geluid</Geluid>
+        <Kostuumontwerper>Kostuumontwerper</Kostuumontwerper>
+        <Kunstenaar>Kunstenaar</Kunstenaar>
+        <Make-up>Make-up</Make-up>
+        <Muzikant>Muzikant</Muzikant>
+        <Nieuwsanker>Nieuwsanker</Nieuwsanker>
+        <Omroeper>Omroeper</Omroeper>
+        <Onderzoeker>Onderzoeker</Onderzoeker>
+        <Post-productie>Post-productie</Post-productie>
+        <Producer>Producer</Producer>
+        <Reporter>Reporter</Reporter>
+        <Scenarist>Scenarist</Scenarist>
+        <Soundtrack>Soundtrack</Soundtrack>
+        <Sponsor>Sponsor</Sponsor>
+        <Technischadviseur>Technisch adviseur</Technischadviseur>
+        <Uitvoerder>Uitvoerder</Uitvoerder>
+        <Vertaler>Vertaler</Vertaler>
+        <Verteller>Verteller</Verteller>
+    </dc_contributors>
+    <dc_creators>
+        <Acteur>Acteur</Acteur>
+        <Archiefvormer>Archiefvormer</Archiefvormer>
+        <Auteur>Auteur</Auteur>
+        <Cast>Cast</Cast>
+        <Choreograaf>Choreograaf</Choreograaf>
+        <Cineast>Cineast</Cineast>
+        <Componist>Componist</Componist>
+        <Danser>Danser</Danser>
+        <Documentairemaker>Documentairemaker</Documentairemaker>
+        <Fotograaf>Fotograaf</Fotograaf>
+        <Interviewer>Interviewer</Interviewer>
+        <Kunstenaar>Kunstenaar</Kunstenaar>
+        <Maker>Maker</Maker>
+        <Muzikant>Muzikant</Muzikant>
+        <Opdrachtgever>Opdrachtgever</Opdrachtgever>
+        <Performer>Performer</Performer>
+        <Producer>Producer</Producer>
+        <Productiehuis>Productiehuis</Productiehuis>
+        <Regisseur>Regisseur</Regisseur>
+        <Schrijver>Schrijver</Schrijver>
+    </dc_creators>
+    <dc_description>Description</dc_description>
+    <dc_description_lang>Abstract</dc_description_lang>
+    <dc_description_ondertitels>Caption</dc_description_ondertitels>
+    <dc_description_transcriptie>Transcript</dc_description_transcriptie>
+    <dc_titles type="list">
+        <aflevering>Aflevering</aflevering>
+        <episode>Episode</episode>
+        <alternatief>Alternatief</alternatief>
+        <archief>Archief</archief>
+        <deelarchief>Deelarchief</deelarchief>
+        <registratie>Registratie</registratie>
+        <programma>Programma</programma>
+        <seizoen>Seizoen</seizoen>
+        <seizoennummer>1</seizoennummer>
+        <serie>Serie</serie>
+        <reeks>Reeks</reeks>
+        <deelreeks>Deelreeks</deelreeks>
+        <serienummer>2</serienummer>
+    </dc_titles>
+    <dc_description_programme>Programmabeschrijving</dc_description_programme>
 </VIAA>
