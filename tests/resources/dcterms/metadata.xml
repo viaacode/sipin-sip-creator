@@ -48,23 +48,13 @@
     </dc_rights_rightsHolders>
     <dc_relations>
         <bevat>Bevat</bevat>
-    </dc_relations>
-    <dc_relations>
         <is_deel_van>Is deel van</is_deel_van>
-    </dc_relations>
-    <dc_relations>
         <is_verwant_aan>Is verwant aan</is_verwant_aan>
     </dc_relations>
     <dc_publishers>
         <Distributeur>Distributeur</Distributeur>
-    </dc_publishers>
-    <dc_publishers>
         <Exposant>Exposant</Exposant>
-    </dc_publishers>
-    <dc_publishers>
         <Persagentschap>Persagentschap</Persagentschap>
-    </dc_publishers>
-    <dc_publishers>
         <Publisher>Publisher</Publisher>
     </dc_publishers>
     <dc_languages>
