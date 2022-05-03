@@ -27,6 +27,39 @@ from app.helpers.premis import Fixity
 from app.helpers.sidecar import Sidecar
 
 
+MIMETYPE_TYPE_MAP = {
+    "image/jpeg": "Photographs - Digital",
+    "image/tiff": "Photographs - Digital",
+    "image/jp2": "Photographs - Digital",
+    "audio/mpeg": "Audio - Media-independent (digital)",
+    "audio/x-wav": "Audio - Media-independent (digital)",
+    "audio/ogg": "Audio - Media-independent (digital)",
+    "application/pdf": "Textual works - Digital",
+    "application/zip": "Collection",
+    "video/quicktime": "Video - File-based and Physical Media",
+    "video/mp4": "Video - File-based and Physical Media",
+    "video/mp4": "Video - File-based and Physical Media",
+    "video/MP2T": "Video - File-based and Physical Media",
+    "video/mpeg": "Video - File-based and Physical Media",
+    "application/mxf": "Video - File-based and Physical Media",
+}
+
+
+def calculate_sip_type(mimetype: str) -> str:
+    """Calculate the type of the SIP based on the mimetype of the essence.
+
+    Args:
+        Mimetype to map to the type.
+
+    Returns:
+        The type of the SIP.
+    """
+    try:
+        return MIMETYPE_TYPE_MAP[mimetype]
+    except KeyError:
+        return "OTHER"
+
+
 def md5(file: Path) -> str:
     """Calculate the md5 of a given file.
 
@@ -56,7 +89,12 @@ def create_package_mets(
         The METS document as an lxml element.
     """
     # METS doc
-    doc = METSDocSIP(is_package_mets=True)
+    doc = METSDocSIP(
+        is_package_mets=True,
+        type=calculate_sip_type(
+            mimetypes.guess_type(watchfolder_message.get_essence_path())[0]
+        ),
+    )
 
     # Mandatory agent
     mandatory_agent = Agent(
@@ -64,7 +102,7 @@ def create_package_mets(
         AgentType.OTHER,
         other_type="SOFTWARE",
         name="meemoo SIP creator",
-        note=Note("0.1.", NoteType.SOFTWARE_VERSION),
+        note=Note("0.1.0", NoteType.SOFTWARE_VERSION),
     )
     doc.add_agent(mandatory_agent)
 
@@ -91,7 +129,7 @@ def create_package_mets(
     )
     metadata_desc_folder = File(
         file_type=FileType.DIRECTORY,
-        use=FileGrpUse.DESCRIPTIVE.value,
+        use=f"{FileGrpUse.METADATA.value}/{FileGrpUse.DESCRIPTIVE.value}",
         label=FileGrpUse.DESCRIPTIVE.value,
     )
 
@@ -105,13 +143,13 @@ def create_package_mets(
         size=desc_ie_path.stat().st_size,
         mimetype=mimetypes.guess_type(desc_ie_path)[0],
         created=datetime.fromtimestamp(desc_ie_path.stat().st_ctime),
-        path=str(desc_ie_path),
+        path=str(desc_ie_path_rel),
     )
     metadata_desc_folder.add_child(desc_ie_file)
 
     metadata_preserv_folder = File(
         file_type=FileType.DIRECTORY,
-        use=FileGrpUse.PRESERVATION.value,
+        use=f"{FileGrpUse.METADATA.value}/{FileGrpUse.PRESERVATION.value}",
         label=FileGrpUse.PRESERVATION.value,
     )
     reps_folder = File(
@@ -121,7 +159,7 @@ def create_package_mets(
     )
     reps_folder_1 = File(
         file_type=FileType.DIRECTORY,
-        use=FileGrpUse.REPRESENTATIONS.value,
+        use=f"{FileGrpUse.REPRESENTATIONS.value}/representation_1",
         label="representation_1",
     )
 
@@ -150,6 +188,9 @@ def create_package_mets(
 
     doc.add_file(root_folder)
 
+    # dmdsec / amdsec
+    doc.add_dmdsec(desc_ie_file)
+
     return doc.to_element()
 
 
@@ -167,7 +208,11 @@ def create_representation_mets(
         The METS document as an lxml element.
     """
     # METS doc
-    doc = METSDocSIP()
+    doc = METSDocSIP(
+        type=calculate_sip_type(
+            mimetypes.guess_type(watchfolder_message.get_essence_path())[0]
+        ),
+    )
 
     xml_file_name: Path = watchfolder_message.get_xml_path().name
     essence_file_name: Path = watchfolder_message.get_essence_path().name
@@ -179,12 +224,12 @@ def create_representation_mets(
     )
     metadata_desc_folder = File(
         file_type=FileType.DIRECTORY,
-        use=FileGrpUse.DESCRIPTIVE.value,
+        use=f"{FileGrpUse.METADATA.value}/{FileGrpUse.DESCRIPTIVE.value}",
         label=FileGrpUse.DESCRIPTIVE.value,
     )
     metadata_preserv_folder = File(
         file_type=FileType.DIRECTORY,
-        use=FileGrpUse.PRESERVATION.value,
+        use=f"{FileGrpUse.METADATA.value}/{FileGrpUse.PRESERVATION.value}",
         label=FileGrpUse.PRESERVATION.value,
     )
     data_folder = File(
@@ -233,6 +278,9 @@ def create_representation_mets(
 
     doc.add_file(metadata_folder)
     doc.add_file(data_folder)
+
+    # amdsec
+    doc.add_amdsec(pres_file)
 
     return doc.to_element()
 

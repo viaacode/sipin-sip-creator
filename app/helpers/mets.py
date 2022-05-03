@@ -71,14 +71,6 @@ def generate_uuid() -> str:
     return f"uuid-{uuid4()}"
 
 
-ATTRS = {
-    "OBJID": "54c3a254-9c78-494d-a1f1-d07640989038",
-    "TYPE": "OTHER",
-    qname_text(NAMESPACES, "csip", "OTHERTYPE"): "Photographs - Digital",
-    "PROFILE": "https://earksip.dilcis.eu/profile/E-ARK-SIP.xml",
-}
-
-
 class Note:
     """Class representing a METS note.
 
@@ -125,9 +117,9 @@ class Agent:
     Args:
         role: The role of the agent.
         type: The type of the agent.
-        other_role: If the role is "other", this field is needed to denote the value
+        other_role: If the role is "OTHER", this field is needed to denote the value
                     of the other role.
-        other_type: If the type is "other", this field is needed to denote the value
+        other_type: If the type is "OTHER", this field is needed to denote the value
                     of the other type.
         name: The name of the agent.
         note: The note of the agent.
@@ -206,6 +198,7 @@ class File:
     DIV_TAG = etree.QName(NAMESPACES["mets"], "div")
     MPTR_TAG = etree.QName(NAMESPACES["mets"], "mptr")
     FPTR_TAG = etree.QName(NAMESPACES["mets"], "fptr")
+    MDREF_TAG = etree.QName(NAMESPACES["mets"], "mdRef")
 
     def __init__(
         self,
@@ -331,31 +324,109 @@ class File:
             raise ValueError("No valid type")
         return file_element
 
+    def to_dmdsec_element(self):
+        """Returns the dmdSec node as an lxml element.
+
+        Returns:
+            The dmdSec element."""
+
+        dmdsec_attrs = {
+            "ID": generate_uuid(),
+            "LOCTYPE": "URL",
+            "MDTYPE": "PREMIS",
+            qname_text(NAMESPACES, "xlink", "type"): "simple",
+            qname_text(NAMESPACES, "xlink", "href"): self.path,
+        }
+        if self.mimetype:
+            dmdsec_attrs["MIMETYPE"] = self.mimetype
+        if self.size:
+            dmdsec_attrs["SIZE"] = str(self.size)
+        if self.created:
+            dmdsec_attrs["CREATED"] = self.created.astimezone().isoformat()
+        if self.checksum:
+            dmdsec_attrs["CHECKSUM"] = self.checksum
+            dmdsec_attrs["CHECKSUMTYPE"] = "MD5"
+        return etree.Element(self.MDREF_TAG, dmdsec_attrs)
+
+    def to_amdsec_element(self):
+        """Returns the amdSec node as an lxml element.
+
+        Returns:
+            The amdSec element."""
+
+        digiprov_element = etree.Element(
+            etree.QName(NAMESPACES["mets"], "digiprovMD"), {"ID": generate_uuid()}
+        )
+
+        amdsec_attrs = {
+            "ID": generate_uuid(),
+            "LOCTYPE": "URL",
+            "MDTYPE": "PREMIS",
+            qname_text(NAMESPACES, "xlink", "type"): "simple",
+            qname_text(NAMESPACES, "xlink", "href"): self.path,
+        }
+        if self.mimetype:
+            amdsec_attrs["MIMETYPE"] = self.mimetype
+        if self.size:
+            amdsec_attrs["SIZE"] = str(self.size)
+        if self.created:
+            amdsec_attrs["CREATED"] = self.created.astimezone().isoformat()
+        if self.checksum:
+            amdsec_attrs["CHECKSUM"] = self.checksum
+            amdsec_attrs["CHECKSUMTYPE"] = "MD5"
+        digiprov_element.append(etree.Element(self.MDREF_TAG, amdsec_attrs))
+        return digiprov_element
+
 
 class METSDocSIP:
-    """Class representing a METS document with (C)SIP extension.
+    """Class representing a METS document with E-ARK SIP extension.
 
     Args:
-        is_package_mets: Denotes if this is the package mets."""
+        is_package_mets: Denotes if this is the package mets.
+
+        type: The type of the SIP.
+        other_type: If the type is "OTHER", this field is needed to denote the value
+                    of the other type.
+    """
 
     FILESEC_TAG = etree.QName(NAMESPACES["mets"], "fileSec")
     STRUCTMAP_TAG = etree.QName(NAMESPACES["mets"], "structMap")
+    AMDSEC_TAG = etree.QName(NAMESPACES["mets"], "amdSec")
+    DMDSEC_TAG = etree.QName(NAMESPACES["mets"], "dmdSec")
+    ATTRS = {
+        "OBJID": "54c3a254-9c78-494d-a1f1-d07640989038",
+        qname_text(NAMESPACES, "csip", "CONTENTINFORMATIONTYPE"): "OTHER",
+        qname_text(NAMESPACES, "csip", "OTHERCONTENTINFORMATIONTYPE"): "sidecar",
+        "PROFILE": "https://earksip.dilcis.eu/profile/E-ARK-SIP.xml",
+    }
 
-    def __init__(self, is_package_mets: bool = False):
+    def __init__(self, type: str, is_package_mets: bool = False, other_type: str = ""):
         self.agents = []
         self.files = []
+        self.dmdsec = []
+        self.amdsec = []
         self.date_created: str = datetime.now().astimezone().isoformat()
         self.is_package_mets = is_package_mets
+
+        self.type = type
+        # If type is "OTHER" the other_type needs to be filled in
+        if type == "OTHER" and not other_type:
+            raise ValueError("The field 'other_type' is mandatory when type is 'OTHER'")
+        self.other_type = other_type
 
     def _document_root(self):
         """Returns the METS root node as an lxml element.
 
         Returns:
             The root element."""
+        attrs = self.ATTRS.copy()
+        attrs["TYPE"] = self.type
+        if self.other_type:
+            attrs["OTHERTYPE"] = self.other_type
         return etree.Element(
             qname_text(NAMESPACES, "mets", "mets"),
             nsmap=NAMESPACES,
-            attrib=ATTRS,
+            attrib=attrs,
         )
 
     def _document_hdr(self):
@@ -395,6 +466,44 @@ class METSDocSIP:
             structmap_element.append(file.to_structmap_element())
         return structmap_element
 
+    def add_dmdsec(self, file):
+        """Add a File as an dmdSec element.
+
+        args:
+            file: The file to add.
+        """
+        self.dmdsec.append(file)
+
+    def add_amdsec(self, file: File):
+        """Add a File as an amdSec element.
+
+        args:
+            file: The file to add.
+        """
+        self.amdsec.append(file)
+
+    def _dmdSec(self):
+        """Returns dmdSec node including all dmdSec files as an lxml element.
+
+        Returns:
+            The dmdSec element."""
+        dmdsec_attrs = {"ID": generate_uuid()}
+        dmdsec_element = etree.Element(self.DMDSEC_TAG, dmdsec_attrs)
+        for file in self.dmdsec:
+            dmdsec_element.append(file.to_dmdsec_element())
+        return dmdsec_element
+
+    def _amdSec(self):
+        """Returns amdSec node including all amdSec files as an lxml element.
+
+        Returns:
+            The amdSec element."""
+        amdsec_attrs = {"ID": generate_uuid()}
+        amdsec_element = etree.Element(self.AMDSEC_TAG, amdsec_attrs)
+        for file in self.amdsec:
+            amdsec_element.append(file.to_amdsec_element())
+        return amdsec_element
+
     def add_file(self, file: File):
         """Adds a file to the METS docs.
 
@@ -419,6 +528,9 @@ class METSDocSIP:
         root = self._document_root()
         # Add metsHdr
         root.append(self._document_hdr())
+        # Add dmdSec and amdSec
+        root.append(self._dmdSec())
+        root.append(self._amdSec())
         # Add files: fileSec and StructMap
         root.append(self._filesec())
         root.append(self._structmap())
