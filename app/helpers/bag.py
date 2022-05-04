@@ -134,7 +134,7 @@ def create_package_mets(
     )
 
     # The descriptive metadata on IE level
-    desc_ie_path_rel = Path("metadata", "descriptive", "dc_ie.xml")
+    desc_ie_path_rel = Path("metadata", "descriptive", "dc.xml")
     desc_ie_path = Path(sip_root_folder, desc_ie_path_rel)
     desc_ie_file = File(
         file_type=FileType.FILE,
@@ -214,7 +214,6 @@ def create_representation_mets(
         ),
     )
 
-    xml_file_name: Path = watchfolder_message.get_xml_path().name
     essence_file_name: Path = watchfolder_message.get_essence_path().name
 
     metadata_folder = File(
@@ -241,7 +240,7 @@ def create_representation_mets(
     representation_path = Path("representations", "representation_1")
 
     # The preservation metadata file used for fileSec and structMap
-    pres_path_rel = Path(representation_path, "metadata", "preservation", xml_file_name)
+    pres_path_rel = Path(representation_path, "metadata", "preservation", "premis.xml")
     pres_path = Path(sip_root_folder, pres_path_rel)
     pres_file = File(
         file_type=FileType.FILE,
@@ -297,7 +296,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         mets.xml
         metadata/
             descriptive/
-                dc_ie.xml
+                dc.xml
             preservation/
         representations/representation_1/
             data/
@@ -305,7 +304,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
             metadata/
                 descriptive/
                 preservation/
-                    file.xml
+                    premis.xml
 
     Args:
         watchfolder_message: The parse watchfolder message.
@@ -334,7 +333,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     # Create descriptive metadata and store it
     dc_terms = DCTerms.transform(xml_path)
     etree.ElementTree(dc_terms).write(
-        str(metadata_desc_folder.joinpath("dc_ie.xml")),
+        str(metadata_desc_folder.joinpath("dc.xml")),
         pretty_print=True,
     )
 
@@ -367,7 +366,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     representations_metadata_pres_folder.mkdir(exist_ok=True)
     fixity = Fixity(sidecar.md5).to_element()
     etree.ElementTree(fixity).write(
-        str(representations_metadata_pres_folder.joinpath(xml_path.name)),
+        str(representations_metadata_pres_folder.joinpath("premis.xml")),
         pretty_print=True,
     )
 
