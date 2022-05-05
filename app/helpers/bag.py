@@ -6,6 +6,7 @@ import mimetypes
 import shutil
 from datetime import datetime
 from pathlib import Path
+from uuid import uuid4
 
 import bagit
 from lxml import etree
@@ -23,7 +24,15 @@ from app.helpers.mets import (
     FileGrpUse,
     FileType,
 )
-from app.helpers.premis import Fixity
+from app.helpers.premis import (
+    Fixity,
+    Object,
+    ObjectCategoryType,
+    ObjectType,
+    Relationship,
+    RelationshipSubtype,
+    Premis,
+)
 from app.helpers.sidecar import Sidecar
 
 
@@ -132,6 +141,11 @@ def create_package_mets(
         use=f"{FileGrpUse.METADATA.value}/{FileGrpUse.DESCRIPTIVE.value}",
         label=FileGrpUse.DESCRIPTIVE.value,
     )
+    metadata_pres_folder = File(
+        file_type=FileType.DIRECTORY,
+        use=f"{FileGrpUse.METADATA.value}/{FileGrpUse.PRESERVATION.value}",
+        label=FileGrpUse.PRESERVATION.value,
+    )
 
     # The descriptive metadata on IE level
     desc_ie_path_rel = Path("metadata", "descriptive", "dc.xml")
@@ -146,6 +160,20 @@ def create_package_mets(
         path=str(desc_ie_path_rel),
     )
     metadata_desc_folder.add_child(desc_ie_file)
+
+    # The preservation metadata on IE level
+    pres_ie_path_rel = Path("metadata", "preservation", "premis.xml")
+    pres_ie_path = Path(sip_root_folder, pres_ie_path_rel)
+    pres_ie_file = File(
+        file_type=FileType.FILE,
+        label="preservation",
+        checksum=md5(pres_ie_path),
+        size=pres_ie_path.stat().st_size,
+        mimetype=mimetypes.guess_type(pres_ie_path)[0],
+        created=datetime.fromtimestamp(pres_ie_path.stat().st_ctime),
+        path=str(pres_ie_path_rel),
+    )
+    metadata_pres_folder.add_child(pres_ie_file)
 
     metadata_preserv_folder = File(
         file_type=FileType.DIRECTORY,
@@ -190,6 +218,7 @@ def create_package_mets(
 
     # dmdsec / amdsec
     doc.add_dmdsec(desc_ie_file)
+    doc.add_amdsec(pres_ie_file)
 
     return doc.to_element()
 
@@ -298,6 +327,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
             descriptive/
                 dc.xml
             preservation/
+                premis.xml
         representations/representation_1/
             data/
                 essence.ext
@@ -316,6 +346,11 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     if not essence_path.exists() or not xml_path.exists():
         # TODO: raise error
         return
+
+    # Relationships uuids
+    ie_uuid = str(uuid4())
+    rep_uuid = str(uuid4())
+    file_uuid = str(uuid4())
 
     # Parse sidecar
     sidecar = Sidecar(xml_path)
@@ -340,6 +375,25 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     # /metadata/preservation/
     metadata_pres_folder = metadata_folder.joinpath("preservation")
     metadata_pres_folder.mkdir(exist_ok=True)
+    # Premis
+    premis_element = Premis()
+    # Premis object IE
+    premis_object_element_ie = Object(
+        ObjectType.IE, ObjectCategoryType.IE, uuid=ie_uuid
+    )
+    # Premis object IE relationship
+    premis_object_element_ie_relationship = Relationship(
+        RelationshipSubtype.REPRESENTED_BY, rep_uuid
+    )
+    premis_object_element_ie.add_relationship(premis_object_element_ie_relationship)
+
+    premis_element.add_object(premis_object_element_ie)
+
+    etree.ElementTree(premis_element.to_element()).write(
+        str(metadata_pres_folder.joinpath("premis.xml")),
+        pretty_print=True,
+    )
+
     # /representations/representation_1/
     representations_folder = root_folder.joinpath("representations", "representation_1")
     representations_folder.mkdir(exist_ok=True, parents=True)
@@ -364,8 +418,49 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         "preservation"
     )
     representations_metadata_pres_folder.mkdir(exist_ok=True)
-    fixity = Fixity(sidecar.md5).to_element()
-    etree.ElementTree(fixity).write(
+
+    # Create and write premis
+    premis_element = Premis()
+    # Premis object representation
+    premis_object_element_rep = Object(
+        ObjectType.REPRESENTATION, ObjectCategoryType.REPRESENTATION, uuid=rep_uuid
+    )
+
+    # Premis object representation relationships
+    premis_object_element_rep_relation_includes = Relationship(
+        RelationshipSubtype.INCLUDES, uuid=file_uuid
+    )
+    premis_object_element_rep_relation_represents = Relationship(
+        RelationshipSubtype.REPRESENTS, ie_uuid
+    )
+
+    premis_object_element_rep.add_relationship(
+        premis_object_element_rep_relation_includes
+    )
+    premis_object_element_rep.add_relationship(
+        premis_object_element_rep_relation_represents
+    )
+
+    premis_element.add_object(premis_object_element_rep)
+
+    # Premis object file
+    premis_object_element_file = Object(
+        ObjectType.FILE,
+        ObjectCategoryType.FILE,
+        original_name=essence_path.name,
+        uuid=file_uuid,
+        fixity=Fixity(sidecar.md5),
+    )
+
+    # Premis object file relationship
+    premis_object_element_file_relation = Relationship(
+        RelationshipSubtype.INCLUDED_IN, rep_uuid
+    )
+    premis_object_element_file.add_relationship(premis_object_element_file_relation)
+
+    premis_element.add_object(premis_object_element_file)
+
+    etree.ElementTree(premis_element.to_element()).write(
         str(representations_metadata_pres_folder.joinpath("premis.xml")),
         pretty_print=True,
     )
