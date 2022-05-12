@@ -441,13 +441,21 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
         premis_object_element_rep_relation_represents
     )
 
+    # Calculate original name
+    # First of, check in the sidecar metadata in order of existence:
+    #   VIAA/dc_identifiers_localids/bestandsnaam
+    #   VIAA/dc_source
+    # If not available, use the filename of the essence
+    original_name = sidecar.calculate_original_filename()
+    if not original_name:
+        original_name = essence_path.name
     premis_element.add_object(premis_object_element_rep)
 
     # Premis object file
     premis_object_element_file = Object(
         ObjectType.FILE,
         ObjectCategoryType.FILE,
-        original_name=essence_path.name,
+        original_name=original_name,
         uuid=file_uuid,
         fixity=Fixity(sidecar.md5),
     )

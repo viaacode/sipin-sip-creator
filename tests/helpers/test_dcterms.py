@@ -32,6 +32,7 @@ from lxml import etree
             "metadata_programmabeschrijving.xml",
             "dcterms_programmabeschrijving.xml",
         ),
+        ("metadata_bestandsnaam.xml", "dcterms_bestandsnaam.xml"),
     ],
 )
 def test_transform(input_file, output_file):
