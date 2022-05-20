@@ -126,7 +126,7 @@ def create_package_mets(
         AgentRole.CREATOR,
         AgentType.ORGANIZATION,
         name=watchfolder_message.cp_name,
-        note=Note(sidecar.cp_id, NoteType.IDENTIFICATIONCODE),
+        note=Note(watchfolder_message.flow_id, NoteType.IDENTIFICATIONCODE),
     )
     doc.add_agent(submitting_agent)
 
