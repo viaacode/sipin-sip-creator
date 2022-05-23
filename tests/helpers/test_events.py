@@ -23,12 +23,10 @@ def test_message_valid():
     essence_file = event.essence_file
     assert essence_file.file_name == "file.mxf"
     assert essence_file.file_path == "/path/to/essence/file"
-    assert essence_file.md5 == "5"
 
     xml_file = event.xml_file
     assert xml_file.file_name == "file.mxf.xml"
     assert xml_file.file_path == "/path/to/xml/file"
-    assert xml_file.md5 == "1"
 
 
 def test_message_invalid_json():

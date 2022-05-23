@@ -59,4 +59,3 @@ class SIPItem:
     def __init__(self, sip_item: dict):
         self.file_name = sip_item["file_name"]
         self.file_path = sip_item["file_path"]
-        self.md5 = sip_item["md5"]
