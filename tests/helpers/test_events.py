@@ -20,12 +20,12 @@ def test_message_valid():
     event = WatchfolderMessage(_load_resource("message.json"))
     assert event.cp_name == "CPFIELD"
     assert event.flow_id == "FLOWFIELD"
-    essence_file = event.essence_file
+    essence_file = event._get_file("essence")
     assert essence_file.file_name == "file.mxf"
     assert essence_file.file_path == "/path/to/essence/file"
 
-    xml_file = event.xml_file
-    assert xml_file.file_name == "file.mxf.xml"
+    xml_file = event._get_file("sidecar")
+    assert xml_file.file_name == "file.xml"
     assert xml_file.file_path == "/path/to/xml/file"
 
 
@@ -42,3 +42,13 @@ def test_message_missing_key():
     with pytest.raises(InvalidMessageException) as e:
         WatchfolderMessage(_load_resource("message_missing_cp_name.json"))
     assert str(e.value) == "Missing mandatory key: 'cp_name'"
+
+
+def test_get_essence_path():
+    event = WatchfolderMessage(_load_resource("message.json"))
+    assert event.get_essence_path() == Path("/path/to/essence/file/file.mxf")
+
+
+def test_get_xml_path():
+    event = WatchfolderMessage(_load_resource("message.json"))
+    assert event.get_xml_path() == Path("/path/to/xml/file/file.xml")

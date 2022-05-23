@@ -13,7 +13,7 @@
             "timestamp": "2017-09-01T16:23:30.084+02:00"
         },
         {
-            "file_name": "file.mxf.xml",
+            "file_name": "file.xml",
             "file_path": "/path/to/xml/file",
             "file_type": "sidecar",
             "md5": "1",
