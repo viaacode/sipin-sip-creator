@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
+import re
 
 import pika.exceptions
 from cloudevents.events import (
@@ -15,6 +15,7 @@ from viaa.observability import logging
 from app.services.pulsar import PulsarClient, PRODUCER_TOPIC
 from app.services import rabbit
 from app.helpers.bag import create_sip_bag
+from app.helpers.sidecar import Sidecar
 from app.helpers.events import WatchfolderMessage, InvalidMessageException
 
 
@@ -45,14 +46,37 @@ class EventListener:
         """
         try:
             self.log.debug(f"Incoming event: {body}")
+            # Parse watchfolder
             message = WatchfolderMessage(body)
-            bag_path: Path = create_sip_bag(message)
+
+            essence_path = message.get_essence_path()
+            xml_path = message.get_xml_path()
+
+            # Check if essence and XML file exist
+            if not essence_path.exists() or not xml_path.exists():
+                # TODO: write event
+                return
+
+            # filesize of essence. Essence is moved when creating the bag.
+            essence_filesize = essence_path.stat().st_size
+
+            # Parse sidecar
+            sidecar = Sidecar(xml_path)
+
+            bag_path, bag = create_sip_bag(message, sidecar)
+
+            # Regex to match essence paths in bag to fetch md5
+            regex = re.compile("data/representations/.*/data/.*")
+
+            for filepath, fixity in bag.entries.items():
+                if regex.match(filepath):
+                    md5_essence = fixity["md5"]
 
             # Send Pulsar event
             attributes = EventAttributes(
                 type=PRODUCER_TOPIC,
                 source=APP_NAME,
-                subject=message.get_essence_path().stem,
+                subject=essence_path.stem,
                 outcome=EventOutcome.SUCCESS,
             )
 
@@ -61,6 +85,12 @@ class EventListener:
                 "path": str(bag_path),
                 "outcome": EventOutcome.SUCCESS.to_str(),
                 "message": f"SIP created: '{bag_path}'",
+                "essence_filename:": essence_path.name,
+                "md5_hash_essence": md5_essence,
+                "cp_id": message.flow_id,
+                "local_id": sidecar.local_id,
+                "essence_filesize": essence_filesize,
+                "bag_filesize": bag_path.stat().st_size,
             }
 
             outgoing_event = Event(attributes, data)

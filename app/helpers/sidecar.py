@@ -15,8 +15,9 @@ class Sidecar:
         self.cp_id = self.root.findtext("CP_id")
         self.dc_source = self.root.findtext("dc_source")
         self.local_id_filename = self.root.findtext(
-            "dc_identifiers_localids/bestandsnaam"
+            "dc_identifier_localids/bestandsnaam"
         )
+        self.local_id = self.root.findtext("dc_identifier_localid")
 
     def calculate_original_filename(self) -> Optional[str]:
         """Calculate the original filename
