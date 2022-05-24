@@ -6,6 +6,7 @@ import mimetypes
 import shutil
 from datetime import datetime
 from pathlib import Path
+from typing import Tuple
 from uuid import uuid4
 
 import bagit
@@ -313,7 +314,9 @@ def create_representation_mets(
     return doc.to_element()
 
 
-def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
+def create_sip_bag(
+    watchfolder_message: WatchfolderMessage, sidecar: Sidecar
+) -> Tuple[Path, bagit.Bag]:
     """Create the SIP in the bag format.
 
      - Create the minimal SIP
@@ -339,7 +342,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     Args:
         watchfolder_message: The parse watchfolder message.
     Returns:
-        The path of the bag.
+        The path of the zipped bag and the bag information.
     """
     essence_path: Path = watchfolder_message.get_essence_path()
     xml_path = watchfolder_message.get_xml_path()
@@ -351,9 +354,6 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     ie_uuid = str(uuid4())
     rep_uuid = str(uuid4())
     file_uuid = str(uuid4())
-
-    # Parse sidecar
-    sidecar = Sidecar(xml_path)
 
     # Root folder for bag
     root_folder = Path(essence_path.parent, essence_path.stem)
@@ -443,7 +443,7 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
 
     # Calculate original name
     # First of, check in the sidecar metadata in order of existence:
-    #   VIAA/dc_identifiers_localids/bestandsnaam
+    #   VIAA/dc_identifier_localids/bestandsnaam
     #   VIAA/dc_source
     # If not available, use the filename of the essence
     original_name = sidecar.calculate_original_filename()
@@ -490,11 +490,11 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     )
 
     # Make bag
-    bagit.make_bag(root_folder, checksums=["md5"])
+    bag = bagit.make_bag(root_folder, checksums=["md5"])
 
     # Zip bag
     bag_path = shutil.make_archive(
-        essence_path.parent.joinpath(essence_path.stem).with_suffix(".bag"),
+        root_folder.with_suffix(".bag"),
         "zip",
         root_folder,
     )
@@ -502,4 +502,4 @@ def create_sip_bag(watchfolder_message: WatchfolderMessage) -> Path:
     # Remove root folder
     shutil.rmtree(root_folder)
 
-    return Path(bag_path)
+    return Path(bag_path), bag
