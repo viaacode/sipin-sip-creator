@@ -401,8 +401,8 @@ def create_sip_bag(
     # /representations/representation_1/data/
     representations_data_folder = representations_folder.joinpath("data")
     representations_data_folder.mkdir(exist_ok=True)
-    # Move essence
-    essence_path.replace(representations_data_folder.joinpath(essence_path.name))
+    # Copy essence
+    shutil.copy(essence_path, representations_data_folder.joinpath(essence_path.name))
 
     # representations/representation_1/metadata/
     representations_metadata_folder = representations_folder.joinpath("metadata")
