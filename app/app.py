@@ -85,7 +85,7 @@ class EventListener:
                 "path": str(bag_path),
                 "outcome": EventOutcome.SUCCESS.to_str(),
                 "message": f"SIP created: '{bag_path}'",
-                "essence_filename:": essence_path.name,
+                "essence_filename": essence_path.name,
                 "md5_hash_essence": md5_essence,
                 "cp_id": message.flow_id,
                 "local_id": sidecar.local_id,
