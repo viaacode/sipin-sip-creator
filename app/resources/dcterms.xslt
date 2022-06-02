@@ -654,7 +654,7 @@
     </xsl:template>
 
     <!-- Subjects -->
-    <xsl:template match="dc_subjects/Trefwoord">
+    <xsl:template match="dc_subjects/Trefwoord | dc_Subjects/Trefwoord">
         <xsl:element name="dcterms:subject">
             <xsl:value-of select="text()" />
         </xsl:element>
