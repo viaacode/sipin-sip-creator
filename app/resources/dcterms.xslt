@@ -526,7 +526,7 @@
 
     <!-- Identifiers -->
     <xsl:template match="dc_identifier_localids">
-        <xsl:for-each select="*[local-name() != 'bestandsnaam']">
+        <xsl:for-each select="*[local-name() != 'Bestandsnaam' and local-name() != 'bestandsnaam']">
             <xsl:element name="premis:objectIdentifier">
                 <xsl:element name="premis:objectIdentifierType">
                     <xsl:value-of select="local-name()" />

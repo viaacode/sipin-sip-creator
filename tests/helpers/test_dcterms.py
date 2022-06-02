@@ -32,7 +32,7 @@ from lxml import etree
             "metadata_programmabeschrijving.xml",
             "dcterms_programmabeschrijving.xml",
         ),
-        ("metadata_bestandsnaam.xml", "dcterms_bestandsnaam.xml"),
+        ("metadata_bestandsnamen.xml", "dcterms_bestandsnamen.xml"),
         ("metadata_dc_Subjects.xml", "dcterms_dc_Subjects.xml"),
     ],
 )
