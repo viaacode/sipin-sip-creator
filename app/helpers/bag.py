@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
-import mimetypes
 import shutil
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple
+from typing import Optional, Tuple
 from uuid import uuid4
 
 import bagit
@@ -36,6 +35,26 @@ from app.helpers.premis import (
 )
 from app.helpers.sidecar import Sidecar
 
+EXTENSION_MIMETYPE_MAP = {
+    ".jpg": "image/jpeg",
+    ".pdf": "application/pdf",
+    ".tiff": "image/tiff",
+    ".tif": "image/tiff",
+    ".mxf": "application/mxf",
+    ".mov": "video/quicktime",
+    ".mp4": "video/mp4",
+    ".mp3": "audio/mpeg",
+    ".wav": "audio/x-wav",
+    ".jp2": "image/jp2",
+    ".jpeg": "image/jpeg",
+    ".mp2": "audio/mpeg",
+    ".mpg": "video/mpeg",
+    ".ogg": "audio/ogg",
+    ".zip": "application/zip",
+    ".ts": "video/MP2T",
+    ".m4v": "video/mp4",
+    ".xml": "application/xml",
+}
 
 MIMETYPE_TYPE_MAP = {
     "image/jpeg": "Photographs - Digital",
@@ -48,11 +67,25 @@ MIMETYPE_TYPE_MAP = {
     "application/zip": "Collection",
     "video/quicktime": "Video - File-based and Physical Media",
     "video/mp4": "Video - File-based and Physical Media",
-    "video/mp4": "Video - File-based and Physical Media",
     "video/MP2T": "Video - File-based and Physical Media",
     "video/mpeg": "Video - File-based and Physical Media",
     "application/mxf": "Video - File-based and Physical Media",
 }
+
+
+def guess_mimetype(file: Path) -> Optional[str]:
+    """Calculate the mimetype of a path based on the extension.
+
+    Args:
+        The path of the file.
+
+    Returns:
+        The mimetype.
+    """
+    try:
+        return EXTENSION_MIMETYPE_MAP[file.suffix]
+    except KeyError:
+        return None
 
 
 def calculate_sip_type(mimetype: str) -> str:
@@ -101,9 +134,7 @@ def create_package_mets(
     # METS doc
     doc = METSDocSIP(
         is_package_mets=True,
-        type=calculate_sip_type(
-            mimetypes.guess_type(watchfolder_message.get_essence_path())[0]
-        ),
+        type=calculate_sip_type(guess_mimetype(watchfolder_message.get_essence_path())),
     )
 
     # Mandatory agent
@@ -156,7 +187,7 @@ def create_package_mets(
         label="descriptive",
         checksum=md5(desc_ie_path),
         size=desc_ie_path.stat().st_size,
-        mimetype=mimetypes.guess_type(desc_ie_path)[0],
+        mimetype=guess_mimetype(desc_ie_path),
         created=datetime.fromtimestamp(desc_ie_path.stat().st_ctime),
         path=str(desc_ie_path_rel),
     )
@@ -170,7 +201,7 @@ def create_package_mets(
         label="preservation",
         checksum=md5(pres_ie_path),
         size=pres_ie_path.stat().st_size,
-        mimetype=mimetypes.guess_type(pres_ie_path)[0],
+        mimetype=guess_mimetype(pres_ie_path),
         created=datetime.fromtimestamp(pres_ie_path.stat().st_ctime),
         path=str(pres_ie_path_rel),
     )
@@ -200,7 +231,7 @@ def create_package_mets(
         label="representation_1",
         checksum=md5(reps_path),
         size=reps_path.stat().st_size,
-        mimetype=mimetypes.guess_type(reps_path)[0],
+        mimetype=guess_mimetype(reps_path),
         created=datetime.fromtimestamp(reps_path.stat().st_ctime),
         path=str(reps_path_rel),
         is_mets=True,
@@ -239,9 +270,7 @@ def create_representation_mets(
     """
     # METS doc
     doc = METSDocSIP(
-        type=calculate_sip_type(
-            mimetypes.guess_type(watchfolder_message.get_essence_path())[0]
-        ),
+        type=calculate_sip_type(guess_mimetype(watchfolder_message.get_essence_path())),
     )
 
     essence_file_name: Path = watchfolder_message.get_essence_path().name
@@ -276,7 +305,7 @@ def create_representation_mets(
         file_type=FileType.FILE,
         use=FileGrpUse.PRESERVATION.value,
         label=FileGrpUse.PRESERVATION.value,
-        mimetype=mimetypes.guess_type(pres_path)[0],
+        mimetype=guess_mimetype(pres_path),
         path=str(pres_path_rel),
         size=pres_path.stat().st_size,
         checksum=md5(pres_path),
@@ -290,7 +319,7 @@ def create_representation_mets(
         file_type=FileType.FILE,
         use=FileGrpUse.DATA.value,
         label=FileGrpUse.DATA.value,
-        mimetype=mimetypes.guess_type(data_path)[0],
+        mimetype=guess_mimetype(data_path),
         path=str(data_path_rel),
         size=data_path.stat().st_size,
         checksum=sidecar.md5,
