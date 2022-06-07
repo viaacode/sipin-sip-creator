@@ -64,7 +64,6 @@ class EventListener:
         - Send a cloudevent to a Pulsar topic.
         """
         try:
-            self.log.debug(f"Incoming event: {body}")
             # Parse watchfolder
             message = WatchfolderMessage(body)
 
