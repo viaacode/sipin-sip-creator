@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import functools
 import re
+import threading
 
 import pika.exceptions
 from cloudevents.events import (
@@ -27,17 +29,34 @@ class EventListener:
         configParser = ConfigParser()
         self.log = logging.get_logger(__name__, config=configParser)
         self.config = configParser.app_cfg
+        self.threads = []
         # Init RabbitMQ client
         try:
-            self.rabbitClient = rabbit.RabbitClient()
+            self.rabbit_client = rabbit.RabbitClient()
         except pika.exceptions.AMQPConnectionError as error:
             self.log.error("Connection to RabbitMQ failed.")
             raise error
         # Init Pusar client
         self.pulsar_client = PulsarClient()
 
-    def handle_message(self, channel, method, properties, body):
-        """Main method that will handle the incoming messages.
+    def ack_message(self, channel, delivery_tag):
+        if channel.is_open:
+            channel.basic_ack(delivery_tag)
+        else:
+            # Channel is already closed, so we can't ACK this message
+            # TODO: handle properly
+            pass
+
+    def nack_message(self, channel, delivery_tag):
+        if channel.is_open:
+            channel.basic_nack(delivery_tag, requeue=False)
+        else:
+            # Channel is already closed, so we can't NACK this message
+            # TODO: handle properly
+            pass
+
+    def do_work(self, channel, delivery_tag, properties, body):
+        """Worker method:
 
         - Parse the message.
         - Create the SIP.
@@ -99,12 +118,58 @@ class EventListener:
             self.log.info("SIP created event sent.")
         except InvalidMessageException as e:
             self.log.error(e)
-            channel.basic_nack(method.delivery_tag, requeue=False)
+            cb_nack = functools.partial(self.nack_message, channel, delivery_tag)
+            self.rabbit_client.connection.add_callback_threadsafe(cb_nack)
             return
-        channel.basic_ack(method.delivery_tag)
+        # Send RabbitMQ ack.
+        cb_ack = functools.partial(self.ack_message, channel, delivery_tag)
+        self.rabbit_client.connection.add_callback_threadsafe(cb_ack)
+
+    def handle_message(self, channel, method, properties, body):
+        """Main method that will handle the incoming messages.
+
+        Creating the SIP potentially takes a long time to finish. As this is
+        blocking the RabbitMQ I/O loop, this might result in a heartbeat
+        timeout and the rabbit broker closing the connection on its end.
+
+        So, we run the SIP creation in a separate thread making sure the
+        RabbitMQ I/O loop is not blocked.
+
+        That thread will be appended to a list, in order to be able to wait
+        for all threads to finish in the case consuming is stopped.
+        """
+
+        self.log.debug(f"Incoming message: {body}")
+        # Clean up the list of threads, so it doesn't keep appending
+        for t in self.threads:
+            if not t.is_alive():
+                t.handled = True
+        self.threads = [t for t in self.threads if not t.handled]
+
+        thread = threading.Thread(
+            target=self.do_work, args=(channel, method.delivery_tag, properties, body)
+        )
+        thread.handled = False
+        thread.start()
+        self.threads.append(thread)
+
+    def exit_gracefully(self, signum, frame):
+        """Stop consuming queue but finish current tasks/messages."""
+        self.log.info(
+            "Received SIGTERM. Waiting for last SIP creation to finish and then stops."
+        )
+        self.rabbit_client.stop_consuming()
 
     def start(self):
         # Start listening for incoming messages
         self.log.info("Start to listen for messages...")
-        self.rabbitClient.listen(self.handle_message)
+        self.rabbit_client.listen(self.handle_message)
+        # Wait for remaining threads to join after consuming.
+        for thread in self.threads:
+            thread.join()
+        # Ensure callback (n)acks are send
+        self.rabbit_client.connection.process_data_events()
+
+        # Close the RabbitMQ connection
+        self.rabbit_client.connection.close()
         self.pulsar_client.close()
