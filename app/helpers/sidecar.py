@@ -14,9 +14,14 @@ class Sidecar:
         self.md5 = self.root.findtext("md5")
         self.cp_id = self.root.findtext("CP_id")
         self.dc_source = self.root.findtext("dc_source")
+        # Ensure order: Bestandsnaam should have priority over bestandsnaam
         self.local_id_filename = self.root.findtext(
-            "dc_identifier_localids/bestandsnaam"
+            "dc_identifier_localids/Bestandsnaam"
         )
+        if not self.local_id_filename:
+            self.local_id_filename = self.root.findtext(
+                "dc_identifier_localids/bestandsnaam"
+            )
         self.local_id = self.root.findtext("dc_identifier_localid")
 
     def calculate_original_filename(self) -> Optional[str]:

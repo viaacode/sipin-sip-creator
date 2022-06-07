@@ -2,6 +2,7 @@
 <VIAA>
     <PID>PID</PID>
     <dc_identifier_localids type="list" strategy="OVERWRITE">
-        <bestandsnaam>objnum</bestandsnaam>
+        <bestandsnaam>bestandsnaam</bestandsnaam>
+        <Bestandsnaam>Bestandsnaam</Bestandsnaam>
     </dc_identifier_localids>
 </VIAA>

@@ -3,6 +3,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from app.helpers.sidecar import Sidecar
 
 
@@ -17,23 +19,16 @@ def test_sidecar_md5():
     assert sidecar.md5 == "7e0ef8c24fe343d98fbb93b6a7db6ccb"
 
 
-def test_sidecar_calculate_original_filename():
-    sidecar = Sidecar(
-        Path("tests", "resources", "sidecar", "sidecar_bestandsnaam_source.xml")
-    )
-    assert sidecar.calculate_original_filename() == "bestandsnaam"
-
-
-def test_sidecar_calculate_original_filename_source():
-    sidecar = Sidecar(Path("tests", "resources", "sidecar", "sidecar_source.xml"))
-    assert sidecar.calculate_original_filename() == "source"
-
-
-def test_sidecar_calculate_original_filename_bestandsnaam():
-    sidecar = Sidecar(Path("tests", "resources", "sidecar", "sidecar_bestandsnaam.xml"))
-    assert sidecar.calculate_original_filename() == "bestandsnaam"
-
-
-def test_sidecar_calculate_original_filename_none():
-    sidecar = Sidecar(Path("tests", "resources", "sidecar", "sidecar.xml"))
-    assert sidecar.calculate_original_filename() is None
+@pytest.mark.parametrize(
+    "input_file,bestandsnaam",
+    [
+        ("sidecar_bestandsnaam_source.xml", "bestandsnaam"),
+        ("sidecar_source.xml", "source"),
+        ("sidecar_bestandsnaam.xml", "bestandsnaam"),
+        ("sidecar_bestandsnamen_source.xml", "Bestandsnaam"),
+        ("sidecar.xml", None),
+    ],
+)
+def test_sidecar_calculate_original_filename(input_file, bestandsnaam):
+    sidecar = Sidecar(Path("tests", "resources", "sidecar", input_file))
+    assert sidecar.calculate_original_filename() == bestandsnaam
