@@ -3,6 +3,7 @@
 
 import hashlib
 import shutil
+import zipfile
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, Tuple
@@ -472,6 +473,7 @@ def create_sip_bag(
 
     # Calculate original name
     # First of, check in the sidecar metadata in order of existence:
+    #   VIAA/dc_identifier_localids/Bestandsnaam
     #   VIAA/dc_identifier_localids/bestandsnaam
     #   VIAA/dc_source
     # If not available, use the filename of the essence
@@ -522,11 +524,10 @@ def create_sip_bag(
     bag = bagit.make_bag(root_folder, checksums=["md5"])
 
     # Zip bag
-    bag_path = shutil.make_archive(
-        root_folder.with_suffix(".bag"),
-        "zip",
-        root_folder,
-    )
+    bag_path = root_folder.with_suffix(".bag.zip")
+    with zipfile.ZipFile(bag_path, mode="w") as archive:
+        for file_path in root_folder.rglob("*"):
+            archive.write(file_path, arcname=file_path.relative_to(root_folder))
 
     # Remove root folder
     shutil.rmtree(root_folder)
