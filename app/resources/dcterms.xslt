@@ -1,7 +1,14 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:premis="http://www.loc.gov/premis/v3" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api" xsi:schemaLocation="urn:ebu:metadata-schema:ebucore https://www.ebu.ch/metadata/schemas/EBUCore/20171009/ebucore.xsd" version="1.1">
     <xsl:output method="xml" encoding="UTF-8" indent="yes" />
+
+    <!-- vars -->
+    <xsl:variable name="title" select="/VIAA/dc_title" />
+    <xsl:variable name="titles_first" select="/VIAA/dc_titles/*[1]" />
+    <xsl:variable name="description_short" select="/VIAA/dc_description_short" />
+
     <xsl:template match="VIAA">
         <premis:object>
+            <xsl:call-template name="title" />
             <xsl:apply-templates select="*" />
         </premis:object>
     </xsl:template>
@@ -887,11 +894,29 @@
         </xsl:element>
     </xsl:template>
 
-    <!-- Title -->
-    <xsl:template match="dc_title">
-        <xsl:element name="dcterms:title">
-            <xsl:value-of select="text()" />
-        </xsl:element>
+    <!-- Title
+
+    In order:
+     - dc_title
+     - dc_titles/*[1] - first element in dc_titles
+     - dc_short_description
+    -->
+    <xsl:template name="title">
+        <xsl:if test="$title">
+            <xsl:element name="dcterms:title">
+                <xsl:value-of select="$title" />
+            </xsl:element>
+        </xsl:if>
+        <xsl:if test="$titles_first and not($title)">
+            <xsl:element name="dcterms:title">
+                <xsl:value-of select="$titles_first" />
+            </xsl:element>
+        </xsl:if>
+        <xsl:if test="$description_short and not($titles_first or $title)">
+            <xsl:element name="dcterms:title">
+                <xsl:value-of select="$description_short" />
+            </xsl:element>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template match="@*|node()">
