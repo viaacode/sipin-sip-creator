@@ -10,6 +10,7 @@ import pika
 
 class RabbitClient:
     def __init__(self):
+        self.stopped = False
         configParser = ConfigParser()
         self.log = logging.get_logger(__name__, config=configParser)
         self.rabbit_config = configParser.app_cfg["rabbitmq"]
@@ -26,8 +27,6 @@ class RabbitClient:
             )
         )
 
-        self.channel = self.connection.channel()
-
         self.prefetch_count = int(self.rabbit_config["prefetch_count"])
 
     def listen(self, on_message_callback, queue=None):
@@ -35,19 +34,19 @@ class RabbitClient:
             queue = self.rabbit_config["queue"]
 
         try:
-            while True:
+            while not self.stopped:
                 try:
-                    channel = self.connection.channel()
+                    self.channel = self.connection.channel()
 
                     self.channel.basic_qos(
                         prefetch_count=self.prefetch_count, global_qos=False
                     )
 
-                    channel.basic_consume(
+                    self.channel.basic_consume(
                         queue=queue, on_message_callback=on_message_callback
                     )
 
-                    channel.start_consuming()
+                    self.channel.start_consuming()
                 except pika.exceptions.StreamLostError:
                     self.log.warning("RMQBridge lost connection, reconnecting...")
                     time.sleep(3)
@@ -61,6 +60,8 @@ class RabbitClient:
                     time.sleep(3)
 
         except KeyboardInterrupt:
-            channel.stop_consuming()
+            self.stop_consuming()
 
-        self.connection.close()
+    def stop_consuming(self):
+        self.stopped = True
+        self.channel.stop_consuming()
