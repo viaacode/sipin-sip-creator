@@ -912,7 +912,7 @@
                 <xsl:value-of select="$titles_first" />
             </xsl:element>
         </xsl:if>
-        <xsl:if test="$description_short and not($titles_first and $title)">
+        <xsl:if test="$description_short and not($titles_first or $title)">
             <xsl:element name="dcterms:title">
                 <xsl:value-of select="$description_short" />
             </xsl:element>
