@@ -12,6 +12,8 @@
     <dcterms_issued>2022-03-29</dcterms_issued>
     <dc_title>Dit is een titel</dc_title>
     <dc_description>Dit is een beschrijving</dc_description>
+    <!-- ignore -->
+    <dc_description_short>Dit is een korte beschrijving</dc_description_short>
     <dc_types type="list" strategy="OVERWRITE">
         <multiselect>Nieuws</multiselect>
         <multiselect>Sport</multiselect>
