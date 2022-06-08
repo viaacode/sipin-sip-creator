@@ -35,6 +35,8 @@ from lxml import etree
         ("metadata_bestandsnamen.xml", "dcterms_bestandsnamen.xml"),
         ("metadata_dc_Subjects.xml", "dcterms_dc_Subjects.xml"),
         ("metadata_description_short.xml", "dcterms_description_short.xml"),
+        ("metadata_titles_empty_title.xml", "dcterms_titles_empty_title.xml"),
+        ("metadata_all_empty_titles.xml", "dcterms_all_empty_titles.xml"),
     ],
 )
 def test_transform(input_file, output_file):
