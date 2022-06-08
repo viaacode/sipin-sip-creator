@@ -902,17 +902,17 @@
      - dc_short_description
     -->
     <xsl:template name="title">
-        <xsl:if test="$title">
+        <xsl:if test="$title !=''">
             <xsl:element name="dcterms:title">
                 <xsl:value-of select="$title" />
             </xsl:element>
         </xsl:if>
-        <xsl:if test="$titles_first and not($title)">
+        <xsl:if test="$titles_first !='' and not($title != '')">
             <xsl:element name="dcterms:title">
                 <xsl:value-of select="$titles_first" />
             </xsl:element>
         </xsl:if>
-        <xsl:if test="$description_short and not($titles_first or $title)">
+        <xsl:if test="$description_short !='' and not($titles_first !='' or $title !='')">
             <xsl:element name="dcterms:title">
                 <xsl:value-of select="$description_short" />
             </xsl:element>
