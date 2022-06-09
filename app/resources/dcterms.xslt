@@ -13,11 +13,38 @@
         </premis:object>
     </xsl:template>
 
-    <!-- Creators -->
+    <!-- Contributors -->
+    <xsl:template match="dc_contributors/Aanwezig">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>aanwezig</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
     <xsl:template match="dc_contributors/Adviseur">
         <xsl:element name="dcterms:contributor">
             <xsl:attribute name="schema:roleName">
                 <xsl:text>adviseur</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="dc_contributors/Afwezig">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>afwezig</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="dc_contributors/Archivaris">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>archivaris</xsl:text>
             </xsl:attribute>
             <xsl:value-of select="text()" />
         </xsl:element>
@@ -110,10 +137,19 @@
         </xsl:element>
     </xsl:template>
 
-    <xsl:template match="dc_contributors/Decorontwerper">
+    <xsl:template match="dc_contributors/DecorOntwerper">
         <xsl:element name="dcterms:contributor">
             <xsl:attribute name="schema:roleName">
                 <xsl:text>decorontwerper</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="dc_contributors/Digitaliseringspartner">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>digitaliseringspartner</xsl:text>
             </xsl:attribute>
             <xsl:value-of select="text()" />
         </xsl:element>
@@ -123,6 +159,15 @@
         <xsl:element name="dcterms:contributor">
             <xsl:attribute name="schema:roleName">
                 <xsl:text>dirigent</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="dc_contributors/Dramaturg">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>dramaturg</xsl:text>
             </xsl:attribute>
             <xsl:value-of select="text()" />
         </xsl:element>
@@ -146,7 +191,25 @@
         </xsl:element>
     </xsl:template>
 
-    <xsl:template match="dc_contributors/Kostuumontwerper">
+    <xsl:template match="dc_contributors/Geluidsman">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>geluidsman</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="dc_contributors/GrafischOntwerper">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>grafisch_ontwerper</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="dc_contributors/KostuumOntwerper">
         <xsl:element name="dcterms:contributor">
             <xsl:attribute name="schema:roleName">
                 <xsl:text>kostuumontwerper</xsl:text>
@@ -263,7 +326,7 @@
         </xsl:element>
     </xsl:template>
 
-    <xsl:template match="dc_contributors/Technischadviseur">
+    <xsl:template match="dc_contributors/TechnischAdviseur">
         <xsl:element name="dcterms:contributor">
             <xsl:attribute name="schema:roleName">
                 <xsl:text>technisch_adviseur</xsl:text>
@@ -276,6 +339,15 @@
         <xsl:element name="dcterms:contributor">
             <xsl:attribute name="schema:roleName">
                 <xsl:text>uitvoerder</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="dc_contributors/Verontschuldigd">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>verontschuldigd</xsl:text>
             </xsl:attribute>
             <xsl:value-of select="text()" />
         </xsl:element>
@@ -294,6 +366,15 @@
         <xsl:element name="dcterms:contributor">
             <xsl:attribute name="schema:roleName">
                 <xsl:text>verteller</xsl:text>
+            </xsl:attribute>
+            <xsl:value-of select="text()" />
+        </xsl:element>
+    </xsl:template>
+
+    <xsl:template match="dc_contributors/Voorzitter">
+        <xsl:element name="dcterms:contributor">
+            <xsl:attribute name="schema:roleName">
+                <xsl:text>voorzitter</xsl:text>
             </xsl:attribute>
             <xsl:value-of select="text()" />
         </xsl:element>
