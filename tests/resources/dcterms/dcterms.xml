@@ -41,7 +41,10 @@
   <dcterms:publisher>Publisher</dcterms:publisher>
   <dcterms:language>Nederlands</dcterms:language>
   <dcterms:language>Engels</dcterms:language>
+  <dcterms:contributor schema:roleName="aanwezig">Aanwezig</dcterms:contributor>
   <dcterms:contributor schema:roleName="adviseur">Adviseur</dcterms:contributor>
+  <dcterms:contributor schema:roleName="afwezig">Afwezig</dcterms:contributor>
+  <dcterms:contributor schema:roleName="archivaris">Archivaris</dcterms:contributor>
   <dcterms:contributor schema:roleName="arrangeur">Arrangeur</dcterms:contributor>
   <dcterms:contributor schema:roleName="artistiek_directeur">Artistiek directeur</dcterms:contributor>
   <dcterms:contributor schema:roleName="assistent">Assistent</dcterms:contributor>
@@ -53,9 +56,13 @@
   <dcterms:contributor schema:roleName="commentator">Commentator</dcterms:contributor>
   <dcterms:contributor schema:roleName="componist">Componist</dcterms:contributor>
   <dcterms:contributor schema:roleName="decorontwerper">Decorontwerper</dcterms:contributor>
+  <dcterms:contributor schema:roleName="digitaliseringspartner">Digitaliseringspartner</dcterms:contributor>
   <dcterms:contributor schema:roleName="dirigent">Dirigent</dcterms:contributor>
+  <dcterms:contributor schema:roleName="dramaturg">Dramaturg</dcterms:contributor>
   <dcterms:contributor schema:roleName="fotografie">Fotografie</dcterms:contributor>
   <dcterms:contributor schema:roleName="geluid">Geluid</dcterms:contributor>
+  <dcterms:contributor schema:roleName="geluidsman">Geluidsman</dcterms:contributor>
+  <dcterms:contributor schema:roleName="grafisch_ontwerper">Grafisch ontwerper</dcterms:contributor>
   <dcterms:contributor schema:roleName="kostuumontwerper">Kostuumontwerper</dcterms:contributor>
   <dcterms:contributor schema:roleName="kunstenaar">Kunstenaar</dcterms:contributor>
   <dcterms:contributor schema:roleName="make-up">Make-up</dcterms:contributor>
@@ -71,8 +78,10 @@
   <dcterms:contributor schema:roleName="sponsor">Sponsor</dcterms:contributor>
   <dcterms:contributor schema:roleName="technisch_adviseur">Technisch adviseur</dcterms:contributor>
   <dcterms:contributor schema:roleName="uitvoerder">Uitvoerder</dcterms:contributor>
+  <dcterms:contributor schema:roleName="verontschuldigd">Verontschuldigd</dcterms:contributor>
   <dcterms:contributor schema:roleName="vertaler">Vertaler</dcterms:contributor>
   <dcterms:contributor schema:roleName="verteller">Verteller</dcterms:contributor>
+  <dcterms:contributor schema:roleName="voorzitter">Voorzitter</dcterms:contributor>
   <dcterms:creator schema:roleName="acteur">Acteur</dcterms:creator>
   <dcterms:creator schema:roleName="archiefvormer">Archiefvormer</dcterms:creator>
   <dcterms:creator schema:roleName="auteur">Auteur</dcterms:creator>

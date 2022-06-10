@@ -64,7 +64,10 @@
         <multiselect>Engels</multiselect>
     </dc_languages>
     <dc_contributors>
+        <Aanwezig>Aanwezig</Aanwezig>
         <Adviseur>Adviseur</Adviseur>
+        <Afwezig>Afwezig</Afwezig>
+        <Archivaris>Archivaris</Archivaris>
         <Arrangeur>Arrangeur</Arrangeur>
         <ArtistiekDirecteur>Artistiek directeur</ArtistiekDirecteur>
         <Assistent>Assistent</Assistent>
@@ -75,11 +78,15 @@
         <Co-producer>Coproducer</Co-producer>
         <Commentator>Commentator</Commentator>
         <Componist>Componist</Componist>
-        <Decorontwerper>Decorontwerper</Decorontwerper>
+        <DecorOntwerper>Decorontwerper</DecorOntwerper>
+        <Digitaliseringspartner>Digitaliseringspartner</Digitaliseringspartner>
         <Dirigent>Dirigent</Dirigent>
+        <Dramaturg>Dramaturg</Dramaturg>
         <Fotografie>Fotografie</Fotografie>
         <Geluid>Geluid</Geluid>
-        <Kostuumontwerper>Kostuumontwerper</Kostuumontwerper>
+        <Geluidsman>Geluidsman</Geluidsman>
+        <GrafischOntwerper>Grafisch ontwerper</GrafischOntwerper>
+        <KostuumOntwerper>Kostuumontwerper</KostuumOntwerper>
         <Kunstenaar>Kunstenaar</Kunstenaar>
         <Make-up>Make-up</Make-up>
         <Muzikant>Muzikant</Muzikant>
@@ -92,10 +99,12 @@
         <Scenarist>Scenarist</Scenarist>
         <Soundtrack>Soundtrack</Soundtrack>
         <Sponsor>Sponsor</Sponsor>
-        <Technischadviseur>Technisch adviseur</Technischadviseur>
+        <TechnischAdviseur>Technisch adviseur</TechnischAdviseur>
         <Uitvoerder>Uitvoerder</Uitvoerder>
+        <Verontschuldigd>Verontschuldigd</Verontschuldigd>
         <Vertaler>Vertaler</Vertaler>
         <Verteller>Verteller</Verteller>
+        <Voorzitter>Voorzitter</Voorzitter>
     </dc_contributors>
     <dc_creators>
         <Acteur>Acteur</Acteur>
