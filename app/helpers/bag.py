@@ -35,6 +35,7 @@ from app.helpers.premis import (
     Premis,
 )
 from app.helpers.sidecar import Sidecar
+from app.services.org_api import OrgApiClient
 
 EXTENSION_MIMETYPE_MAP = {
     ".jpg": "image/jpeg",
@@ -121,7 +122,10 @@ def md5(file: Path) -> str:
 
 
 def create_package_mets(
-    watchfolder_message: WatchfolderMessage, sip_root_folder: Path, sidecar: Sidecar
+    watchfolder_message: WatchfolderMessage,
+    sip_root_folder: Path,
+    sidecar: Sidecar,
+    org_api_client: OrgApiClient,
 ):
     """Create the package METS.
 
@@ -148,17 +152,16 @@ def create_package_mets(
     )
     doc.add_agent(mandatory_agent)
 
+    cp_name = org_api_client.get_label(watchfolder_message.flow_id)
     # Archival agent
-    archival_agent = Agent(
-        AgentRole.ARCHIVIST, AgentType.ORGANIZATION, name=watchfolder_message.cp_name
-    )
+    archival_agent = Agent(AgentRole.ARCHIVIST, AgentType.ORGANIZATION, name=cp_name)
     doc.add_agent(archival_agent)
 
     # Submitting agent
     submitting_agent = Agent(
         AgentRole.CREATOR,
         AgentType.ORGANIZATION,
-        name=watchfolder_message.cp_name,
+        name=cp_name,
         note=Note(watchfolder_message.flow_id, NoteType.IDENTIFICATIONCODE),
     )
     doc.add_agent(submitting_agent)
@@ -345,7 +348,9 @@ def create_representation_mets(
 
 
 def create_sip_bag(
-    watchfolder_message: WatchfolderMessage, sidecar: Sidecar
+    watchfolder_message: WatchfolderMessage,
+    sidecar: Sidecar,
+    org_api_client: OrgApiClient,
 ) -> Tuple[Path, bagit.Bag]:
     """Create the SIP in the bag format.
 
@@ -514,7 +519,7 @@ def create_sip_bag(
 
     # Create and write package mets.xml
     package_mets_element = create_package_mets(
-        watchfolder_message, root_folder, sidecar
+        watchfolder_message, root_folder, sidecar, org_api_client
     )
     etree.ElementTree(package_mets_element).write(
         str(root_folder.joinpath("mets.xml")), pretty_print=True

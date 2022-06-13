@@ -14,6 +14,7 @@ from cloudevents.events import (
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
 
+from app.services.org_api import OrgApiClient
 from app.services.pulsar import PulsarClient, PRODUCER_TOPIC
 from app.services import rabbit
 from app.helpers.bag import create_sip_bag
@@ -38,6 +39,8 @@ class EventListener:
             raise error
         # Init Pusar client
         self.pulsar_client = PulsarClient()
+        # Init org API client
+        self.org_api_client = OrgApiClient()
 
     def ack_message(self, channel, delivery_tag):
         if channel.is_open:
@@ -81,7 +84,7 @@ class EventListener:
             # Parse sidecar
             sidecar = Sidecar(xml_path)
 
-            bag_path, bag = create_sip_bag(message, sidecar)
+            bag_path, bag = create_sip_bag(message, sidecar, self.org_api_client)
 
             # Regex to match essence paths in bag to fetch md5
             regex = re.compile("data/representations/.*/data/.*")

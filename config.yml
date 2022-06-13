@@ -13,3 +13,5 @@ app:
   pulsar:
     host: !ENV ${PULSAR_HOST}
     port: 6650
+  org_api:
+    url: !ENV ${ORG_API_URL}
