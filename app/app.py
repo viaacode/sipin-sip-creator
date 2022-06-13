@@ -88,7 +88,7 @@ class EventListener:
 
             for filepath, fixity in bag.entries.items():
                 if regex.match(filepath):
-                    md5_essence = fixity["md5"]
+                    md5_hash_essence_manifest = fixity["md5"]
 
             # Send Pulsar event
             attributes = EventAttributes(
@@ -104,11 +104,12 @@ class EventListener:
                 "outcome": EventOutcome.SUCCESS.to_str(),
                 "message": f"SIP created: '{bag_path}'",
                 "essence_filename": essence_path.name,
-                "md5_hash_essence": md5_essence,
+                "md5_hash_essence_manifest": md5_hash_essence_manifest,
                 "cp_id": message.flow_id,
                 "local_id": sidecar.local_id,
                 "essence_filesize": essence_filesize,
                 "bag_filesize": bag_path.stat().st_size,
+                "md5_hash_essence_sidecar": sidecar.md5,
             }
 
             outgoing_event = Event(attributes, data)
