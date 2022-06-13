@@ -17,7 +17,7 @@ from viaa.observability import logging
 from app.services.org_api import OrgApiClient
 from app.services.pulsar import PulsarClient, PRODUCER_TOPIC
 from app.services import rabbit
-from app.helpers.bag import create_sip_bag
+from app.helpers.bag import Bag
 from app.helpers.sidecar import Sidecar
 from app.helpers.events import WatchfolderMessage, InvalidMessageException
 
@@ -84,7 +84,7 @@ class EventListener:
             # Parse sidecar
             sidecar = Sidecar(xml_path)
 
-            bag_path, bag = create_sip_bag(message, sidecar, self.org_api_client)
+            bag_path, bag = Bag(message, sidecar, self.org_api_client).create_sip_bag()
 
             # Regex to match essence paths in bag to fetch md5
             regex = re.compile("data/representations/.*/data/.*")
