@@ -1,4 +1,6 @@
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
 
@@ -45,10 +47,19 @@ class OrgApiClient:
 
         query = self._construct_query(cp_id)
         data_payload = {"query": query}
-        response = requests.post(
-            self.org_api_config["url"],
-            json=data_payload,
+
+        retry_strategy = Retry(
+            total=10,
+            backoff_factor=2,
+            status_forcelist=[429, 500, 502, 503, 504],
+            method_whitelist=["POST"],
         )
+
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        with requests.Session() as session:
+            session.mount("https://", adapter)
+            session.mount("http://", adapter)
+            response = session.post(self.org_api_config["url"], json=data_payload)
         try:
             label = response.json()["data"]["organizations"][0]["label"]
         except (KeyError, IndexError) as e:
