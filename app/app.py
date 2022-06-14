@@ -11,6 +11,8 @@ from cloudevents.events import (
     EventOutcome,
     EventAttributes,
 )
+from requests.exceptions import ConnectionError
+from urllib3.exceptions import MaxRetryError
 from viaa.configuration import ConfigParser
 from viaa.observability import logging
 
@@ -20,7 +22,6 @@ from app.services import rabbit
 from app.helpers.bag import Bag
 from app.helpers.sidecar import Sidecar
 from app.helpers.events import WatchfolderMessage, InvalidMessageException
-
 
 APP_NAME = "sipin-sip-creator"
 
@@ -50,9 +51,9 @@ class EventListener:
             # TODO: handle properly
             pass
 
-    def nack_message(self, channel, delivery_tag):
+    def nack_message(self, channel, delivery_tag, requeue=False):
         if channel.is_open:
-            channel.basic_nack(delivery_tag, requeue=False)
+            channel.basic_nack(delivery_tag, requeue=requeue)
         else:
             # Channel is already closed, so we can't NACK this message
             # TODO: handle properly
@@ -84,7 +85,16 @@ class EventListener:
             # Parse sidecar
             sidecar = Sidecar(xml_path)
 
-            bag_path, bag = Bag(message, sidecar, self.org_api_client).create_sip_bag()
+            try:
+                bag_path, bag = Bag(
+                    message, sidecar, self.org_api_client
+                ).create_sip_bag()
+            except (ConnectionError, MaxRetryError):
+                cb_nack = functools.partial(
+                    self.nack_message, channel, delivery_tag, requeue=True
+                )
+                self.rabbit_client.connection.add_callback_threadsafe(cb_nack)
+                return
 
             # Regex to match essence paths in bag to fetch md5
             regex = re.compile("data/representations/.*/data/.*")
