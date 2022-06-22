@@ -72,7 +72,11 @@ class EventListener:
 
             # Check if essence and XML file exist
             if not essence_path.exists() or not xml_path.exists():
-                # TODO: write event
+                self.log.error(
+                    f"Essence ({essence_path}) and/or sidecar ({xml_path}) not found."
+                )
+                cb_nack = functools.partial(self.nack_message, channel, delivery_tag)
+                self.rabbit_client.connection.add_callback_threadsafe(cb_nack)
                 return
 
             # filesize of essence. Essence is moved when creating the bag.
