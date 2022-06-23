@@ -84,7 +84,7 @@ def guess_mimetype(file: Path) -> Optional[str]:
         The mimetype.
     """
     try:
-        return EXTENSION_MIMETYPE_MAP[file.suffix]
+        return EXTENSION_MIMETYPE_MAP[file.suffix.lower()]
     except KeyError:
         return None
 
