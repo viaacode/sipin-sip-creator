@@ -7,10 +7,10 @@
     <xsl:variable name="description_short" select="/VIAA/dc_description_short" />
 
     <xsl:template match="VIAA">
-        <premis:object>
+        <metadata>
             <xsl:call-template name="title" />
             <xsl:apply-templates select="*" />
-        </premis:object>
+        </metadata>
     </xsl:template>
 
     <!-- Contributors -->

@@ -1,3 +1,3 @@
-<premis:object xmlns:premis="http://www.loc.gov/premis/v3" xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:ebucore="urn:ebu:metadata-schema:ebucore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api">
+<metadata xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:premis="http://www.loc.gov/premis/v3" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:ebucore="urn:ebu:metadata-schema:ebucore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api">
   <dcterms:title>Dit is een beschrijving</dcterms:title>
-</premis:object>
+</metadata>
