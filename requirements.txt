@@ -7,9 +7,11 @@ bagit==1.8.1
 pulsar-client==2.8.1
 meemoo-cloudevents==0.1.0rc3
 lxml==4.7.1
+requests==2.28.0
 # Dev
 black==21.12b0
 flake8==4.0.1
 # Test
 pytest==6.2.5
 pytest-cov==3.0.0
+responses==0.21.0
