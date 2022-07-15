@@ -12,7 +12,7 @@ from uuid import uuid4
 import bagit
 from lxml import etree
 
-from app.helpers.dcterms import DCTerms
+from app.helpers.dc import DC
 from app.helpers.events import WatchfolderMessage
 from app.helpers.mets import (
     METSDocSIP,
@@ -405,7 +405,7 @@ class Bag:
         metadata_desc_folder = metadata_folder.joinpath("descriptive")
         metadata_desc_folder.mkdir(exist_ok=True)
         # Create descriptive metadata and store it
-        dc_terms = DCTerms.transform(
+        dc_terms = DC.transform(
             xml_path,
             ie_uuid=etree.XSLT.strparam(ie_uuid),
         )
