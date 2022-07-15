@@ -29,6 +29,7 @@ from app.helpers.premis import (
     Fixity,
     Object,
     ObjectCategoryType,
+    ObjectIdentifier,
     ObjectType,
     Relationship,
     RelationshipSubtype,
@@ -416,9 +417,22 @@ class Bag:
         # Premis
         premis_element = Premis()
         # Premis object IE
-        premis_object_element_ie = Object(
-            ObjectType.IE, ObjectCategoryType.IE, uuid=ie_uuid
+        premis_object_element_ie = Object(ObjectType.IE)
+        premis_object_element_ie.add_object_identifier(
+            ObjectIdentifier("uuid", ie_uuid)
         )
+        # Premis identifiers
+        # local_id
+        premis_object_element_ie.add_object_identifier(
+            ObjectIdentifier("local_id", self.sidecar.local_id)
+        )
+
+        # local_ids
+        for type, value in self.sidecar.local_ids.items():
+            if type not in ("bestandsnaam", "Bestandsnaam"):
+                premis_object_element_ie.add_object_identifier(
+                    ObjectIdentifier(type, value)
+                )
         # Premis object IE relationship
         premis_object_element_ie_relationship = Relationship(
             RelationshipSubtype.REPRESENTED_BY, rep_uuid
@@ -465,9 +479,9 @@ class Bag:
         premis_element = Premis()
         # Premis object representation
         premis_object_element_rep = Object(
-            ObjectType.REPRESENTATION, ObjectCategoryType.REPRESENTATION, uuid=rep_uuid
+            ObjectType.REPRESENTATION,
+            [ObjectIdentifier("uuid", rep_uuid)],
         )
-
         # Premis object representation relationships
         premis_object_element_rep_relation_includes = Relationship(
             RelationshipSubtype.INCLUDES, uuid=file_uuid
@@ -497,9 +511,8 @@ class Bag:
         # Premis object file
         premis_object_element_file = Object(
             ObjectType.FILE,
-            ObjectCategoryType.FILE,
+            [ObjectIdentifier("uuid", file_uuid)],
             original_name=original_name,
-            uuid=file_uuid,
             fixity=Fixity(self.sidecar.md5),
         )
 

@@ -1,4 +1,4 @@
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:premis="http://www.loc.gov/premis/v3" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:ebucore="urn:ebu:metadata-schema:ebucore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api" xsi:schemaLocation="urn:ebu:metadata-schema:ebucore https://www.ebu.ch/metadata/schemas/EBUCore/20171009/ebucore.xsd" version="1.1">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:ebucore="urn:ebu:metadata-schema:ebucore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api" xsi:schemaLocation="urn:ebu:metadata-schema:ebucore https://www.ebu.ch/metadata/schemas/EBUCore/20171009/ebucore.xsd" version="1.1">
     <xsl:output method="xml" encoding="UTF-8" indent="yes" />
 
     <!-- vars -->
@@ -598,32 +598,6 @@
         <xsl:element name="schema:transcript">
             <xsl:value-of select="text()" />
         </xsl:element>
-    </xsl:template>
-
-    <!-- Identifier local ID -->
-    <xsl:template match="dc_identifier_localid">
-        <xsl:element name="premis:objectIdentifier">
-            <xsl:element name="premis:objectIdentifierType">
-                <xsl:text>local_id</xsl:text>
-            </xsl:element>
-            <xsl:element name="premis:objectIdentifierValue">
-                <xsl:value-of select="text()" />
-            </xsl:element>
-        </xsl:element>
-    </xsl:template>
-
-    <!-- Identifiers -->
-    <xsl:template match="dc_identifier_localids">
-        <xsl:for-each select="*[local-name() != 'Bestandsnaam' and local-name() != 'bestandsnaam']">
-            <xsl:element name="premis:objectIdentifier">
-                <xsl:element name="premis:objectIdentifierType">
-                    <xsl:value-of select="local-name()" />
-                </xsl:element>
-                <xsl:element name="premis:objectIdentifierValue">
-                    <xsl:value-of select="text()" />
-                </xsl:element>
-            </xsl:element>
-        </xsl:for-each>
     </xsl:template>
 
     <!-- Languages-->
