@@ -13,7 +13,6 @@ from lxml import etree
 @pytest.mark.parametrize(
     "input_file,output_file",
     [
-        ("metadata.xml", "dcterms.xml"),
         ("metadata_deelarchief.xml", "dcterms_deelarchief.xml"),
         ("metadata_archief.xml", "dcterms_archief.xml"),
         ("metadata_seizoen.xml", "dcterms_seizoen.xml"),
@@ -47,4 +46,18 @@ def test_transform(input_file, output_file):
     # Assert
     terms_xml = etree.tostring(terms_element, pretty_print=True).strip()
     xml = load_resource(Path("tests", "resources", "dcterms", output_file))
+    assert terms_xml == xml
+
+
+def test_transform_uuid():
+    # Arrange
+    medadata_path = Path("tests", "resources", "dcterms", "metadata.xml")
+    # Act
+    terms_element = DCTerms.transform(
+        medadata_path,
+        ie_uuid=etree.XSLT.strparam("865b767d-05f9-49d5-ba54-e9e82acec30d"),
+    )
+    # Assert
+    terms_xml = etree.tostring(terms_element, pretty_print=True).strip()
+    xml = load_resource(Path("tests", "resources", "dcterms", "dcterms.xml"))
     assert terms_xml == xml

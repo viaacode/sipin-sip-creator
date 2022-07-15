@@ -1,6 +1,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:ebucore="urn:ebu:metadata-schema:ebucore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api" xsi:schemaLocation="urn:ebu:metadata-schema:ebucore https://www.ebu.ch/metadata/schemas/EBUCore/20171009/ebucore.xsd" version="1.1">
     <xsl:output method="xml" encoding="UTF-8" indent="yes" />
-
+    <!-- params -->
+    <xsl:param name="ie_uuid" />
     <!-- vars -->
     <xsl:variable name="title" select="/VIAA/dc_title" />
     <xsl:variable name="titles_first" select="/VIAA/dc_titles/*[1]" />
@@ -9,10 +10,19 @@
     <xsl:template match="VIAA">
         <metadata>
             <xsl:call-template name="title" />
+            <xsl:call-template name="ie_uuid" />
             <xsl:apply-templates select="*" />
         </metadata>
     </xsl:template>
 
+    <!-- linking identifier -->
+    <xsl:template name="ie_uuid">
+        <xsl:if test="$ie_uuid !=''">
+            <xsl:element name="dcterms:identifier">
+                <xsl:value-of select="concat('uuid-', $ie_uuid)" />
+            </xsl:element>
+        </xsl:if>
+    </xsl:template>
     <!-- Contributors -->
     <xsl:template match="dc_contributors/Aanwezig">
         <xsl:element name="dcterms:contributor">
@@ -938,13 +948,6 @@
             <xsl:attribute name="xsi:type">
                 <xsl:text>EDTF-level1</xsl:text>
             </xsl:attribute>
-            <xsl:value-of select="text()" />
-        </xsl:element>
-    </xsl:template>
-
-    <!-- Identifier PID-->
-    <xsl:template match="PID">
-        <xsl:element name="dcterms:identifier">
             <xsl:value-of select="text()" />
         </xsl:element>
     </xsl:template>

@@ -7,8 +7,8 @@ class DCTerms:
     """Class to write descriptive metadata of the representation in DCTerms format."""
 
     @classmethod
-    def transform(cls, xml_source_path: Path) -> etree.Element:
+    def transform(cls, xml_source_path: Path, **kwargs) -> etree.Element:
         xslt_path = Path("app", "resources", "dcterms.xslt")
         xslt = etree.parse(str(xslt_path.resolve()))
         transform = etree.XSLT(xslt)
-        return transform(etree.parse(str(xml_source_path))).getroot()
+        return transform(etree.parse(str(xml_source_path)), **kwargs).getroot()

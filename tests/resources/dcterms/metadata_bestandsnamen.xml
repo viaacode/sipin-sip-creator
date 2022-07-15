@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <VIAA>
-    <PID>PID</PID>
     <dc_identifier_localids type="list" strategy="OVERWRITE">
         <bestandsnaam>bestandsnaam</bestandsnaam>
         <Bestandsnaam>Bestandsnaam</Bestandsnaam>

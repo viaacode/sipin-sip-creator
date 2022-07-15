@@ -405,7 +405,10 @@ class Bag:
         metadata_desc_folder = metadata_folder.joinpath("descriptive")
         metadata_desc_folder.mkdir(exist_ok=True)
         # Create descriptive metadata and store it
-        dc_terms = DCTerms.transform(xml_path)
+        dc_terms = DCTerms.transform(
+            xml_path,
+            ie_uuid=etree.XSLT.strparam(ie_uuid),
+        )
         etree.ElementTree(dc_terms).write(
             str(metadata_desc_folder.joinpath("dc.xml")),
             pretty_print=True,
