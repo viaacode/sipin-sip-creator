@@ -2,7 +2,6 @@
 <VIAA>
     <CP>CP1</CP>
     <CP_id>OR-0000001</CP_id>
-    <PID>PID</PID>
     <dc_identifier_localid>localid</dc_identifier_localid>
     <dc_identifier_localids type="list" strategy="OVERWRITE">
         <Object_number>objnum</Object_number>

@@ -3,7 +3,6 @@
 
 from enum import Enum
 from typing import List
-from uuid import uuid4
 
 from lxml import etree
 
@@ -63,10 +62,12 @@ class ObjectIdentifier:
     """Class representing a objectIdentifier node.
 
     Args:
-        uuid: The uuid."""
+        type: The type of the object identifier.
+        value: The value of the object identifier."""
 
-    def __init__(self, uuid: str = str(uuid4())):
-        self.uuid = uuid
+    def __init__(self, type: str, value: str):
+        self.type = type
+        self.value = value
 
     def to_element(self):
         """Returns the objectIdentifier node as an lxml element.
@@ -82,12 +83,12 @@ class ObjectIdentifier:
         etree.SubElement(
             object_identifier_element,
             qname_text(NSMAP, "premis", "objectIdentifierType"),
-        ).text = "UUID"
+        ).text = self.type
         # Premis related object identifier value
         etree.SubElement(
             object_identifier_element,
             qname_text(NSMAP, "premis", "objectIdentifierValue"),
-        ).text = self.uuid
+        ).text = self.value
 
         return object_identifier_element
 
@@ -257,7 +258,7 @@ class Object:
 
     Args:
         type: The object type.
-        category: The category type.
+        object_identifiers: The object identifiers.
         original_name: The original name.
         fixity: The fixity element.
         relationships: The relationships.
@@ -266,23 +267,22 @@ class Object:
     def __init__(
         self,
         type: ObjectType,
-        category: ObjectCategoryType,
-        uuid: str = str(uuid4()),
+        object_identifiers: List[ObjectIdentifier] = [],
         original_name: str = None,
         fixity: str = None,
-        relationships: List[Relationship] = None,
+        relationships: List[Relationship] = [],
     ):
         self.type: ObjectType = type
-        self.object_category: ObjectCategoryType = category
+        self.object_identifiers = object_identifiers
         self.original_name = original_name
-        self.uuid = uuid
         self.fixity = fixity
         self.relationships = relationships
 
     def add_relationship(self, relationship: Relationship):
-        if not self.relationships:
-            self.relationships = []
         self.relationships.append(relationship)
+
+    def add_object_identifier(self, object_identifier: ObjectIdentifier):
+        self.object_identifiers.append(object_identifier)
 
     def to_element(self):
         """Returns the object node as an lxml element.
@@ -291,7 +291,9 @@ class Object:
             The object element."""
 
         # Premis object
-        object_attributes = {qname_text(NSMAP, "xsi", "type"): self.type.value}
+        object_attributes = {
+            qname_text(NSMAP, "xsi", "type"): f"premis:{self.type.value}"
+        }
         object_element = etree.Element(
             qname_text(NSMAP, "premis", "object"), attrib=object_attributes
         )
@@ -300,11 +302,9 @@ class Object:
         if self.original_name:
             object_element.append(OriginalName(self.original_name).to_element())
 
-        # Premis object category
-        object_element.append(ObjectCategory(self.object_category).to_element())
-
-        # Premis object identifier
-        object_element.append(ObjectIdentifier(self.uuid).to_element())
+        # Premis object identifiers
+        for object_identifier in self.object_identifiers:
+            object_element.append(object_identifier.to_element())
 
         # Premis fixity
         if self.fixity:

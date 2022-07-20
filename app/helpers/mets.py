@@ -395,8 +395,9 @@ class METSDocSIP:
     DMDSEC_TAG = etree.QName(NAMESPACES["mets"], "dmdSec")
     ATTRS = {
         "OBJID": "54c3a254-9c78-494d-a1f1-d07640989038",
-        qname_text(NAMESPACES, "csip", "CONTENTINFORMATIONTYPE"): "OTHER",
-        qname_text(NAMESPACES, "csip", "OTHERCONTENTINFORMATIONTYPE"): "sidecar",
+        qname_text(
+            NAMESPACES, "csip", "CONTENTINFORMATIONTYPE"
+        ): "https://data.hetarchief.be/id/sip/1.0/basic",
         "PROFILE": "https://earksip.dilcis.eu/profile/E-ARK-SIP.xml",
     }
 

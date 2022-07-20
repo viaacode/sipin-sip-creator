@@ -1,0 +1,6 @@
+<metadata xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:ebucore="urn:ebu:metadata-schema:ebucore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api">
+  <dcterms:title>ATV Nieuws</dcterms:title>
+  <dcterms:isPartOf xsi:type="schema:BroadcastEvent">
+    <dcterms:title>ATV Nieuws</dcterms:title>
+  </dcterms:isPartOf>
+</metadata>

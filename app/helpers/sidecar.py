@@ -23,6 +23,9 @@ class Sidecar:
                 "dc_identifier_localids/bestandsnaam"
             )
         self.local_id = self.root.findtext("dc_identifier_localid")
+        self.local_ids = {}
+        for lid in self.root.findall("dc_identifier_localids/*"):
+            self.local_ids[lid.tag] = lid.text
 
     def calculate_original_filename(self) -> Optional[str]:
         """Calculate the original filename

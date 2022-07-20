@@ -1,14 +1,6 @@
-<premis:object xmlns:premis="http://www.loc.gov/premis/v3" xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:ebucore="urn:ebu:metadata-schema:ebucore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api">
+<metadata xmlns:meemoo="https://data.hetarchief.be/ns/algemeen#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:schema="http://schema.org/" xmlns:ebu="urn:ebu:metadata-schema:ebuCore_2012" xmlns:ebucore="urn:ebu:metadata-schema:ebucore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:viaa="http://www.vrt.be/mig/viaa/api">
   <dcterms:title>Dit is een titel</dcterms:title>
-  <dcterms:identifier>PID</dcterms:identifier>
-  <premis:objectIdentifier>
-    <premis:objectIdentifierType>local_id</premis:objectIdentifierType>
-    <premis:objectIdentifierValue>localid</premis:objectIdentifierValue>
-  </premis:objectIdentifier>
-  <premis:objectIdentifier>
-    <premis:objectIdentifierType>Object_number</premis:objectIdentifierType>
-    <premis:objectIdentifierValue>objnum</premis:objectIdentifierValue>
-  </premis:objectIdentifier>
+  <dcterms:identifier>uuid-865b767d-05f9-49d5-ba54-e9e82acec30d</dcterms:identifier>
   <dcterms:created xsi:type="EDTF-level1">2022-03-29</dcterms:created>
   <dcterms:issued xsi:type="EDTF-level1">2022-03-29</dcterms:issued>
   <dcterms:description>Dit is een beschrijving</dcterms:description>
@@ -142,4 +134,4 @@
     </dcterms:hasPart>
   </dcterms:isPartOf>
   <ebucore:type>Object type</ebucore:type>
-</premis:object>
+</metadata>
